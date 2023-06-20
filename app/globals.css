@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --color-white:#FFFFFF;
   --color-light: #f2f2f2;
   --color-dark-gray:#888EB0;
   --color-light-gray:#7E88C3;
@@ -13,10 +14,26 @@
   --color-dark-blue: #252945;
   --color-black: #0C0E16;
   --color-light-black:#141625;
+  --color-green:#33D69F;
+  --color-orange:#FF8F00;
+
+
 }
 
 body {
-background-color:var(--background-color-light);
+background-color:var(--color-light);
 color:var(--color-black);
 font-size:16px;
+}
+
+.status-paid{
+  color:var(--color-green);
+}
+
+.status-pending{
+  color:var(--color-orange);
+}
+
+.status-draft{
+  color:var(--color-light-black);
 }
