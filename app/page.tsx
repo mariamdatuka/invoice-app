@@ -12,8 +12,7 @@ export default function Home() {
               <Header/>
          </div>
          <div className='col-span-1 md:col-span-3 pt-9 pr-16'>
-            
-             <List/>
+               <List/>
          </div>
      </div>
     

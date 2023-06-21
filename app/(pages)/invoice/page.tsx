@@ -2,7 +2,7 @@
 
 const page = () => {
   return (
-    <div>page invoice</div>
+    <div>invoice page</div>
   )
 }
 
