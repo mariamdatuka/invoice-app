@@ -2,6 +2,7 @@
 import React, {useState,useEffect} from 'react'
 import data from '../../data.json'
 import Image from 'next/image'
+import Link from 'next/link'
 
 const List = () => {
   const [selectedStatus, setSelectedStatus]=useState<string>('');
@@ -81,7 +82,8 @@ const List = () => {
        <section 
              className='flex flex-col gap-3 mt-12'>
            {filteredList.map((item:any)=>(
-             <main key={item.id} className='flex gap-3 bg-[var(--color-white)] p-5 rounded-lg items-center justify-around h-16'>
+           <Link key={item.id} href={`/invoice/${item.id}`}> 
+             <main className='flex gap-3 bg-[var(--color-white)] p-5 rounded-lg items-center justify-around h-16'>
                  <p className='text-lg text-[var(--color-black)] font-bold'>#{item.id}</p>
                  <p className='text-md text-[var(--color-light-gray)]'>{item.paymentDue}</p>
                  <p className='text-md text-[var(--color-dark-gray)]'>{item.clientName}</p>
@@ -89,6 +91,7 @@ const List = () => {
                  <div className={`status-${item.status.toLowerCase()} text-md`}>{item.status}</div>
                  <Image src='./assets/icon-arrow-right.svg' alt='arrowRight' width={7} height={7}/>
              </main>
+          </Link>
            ))}
        </section>
     </>
