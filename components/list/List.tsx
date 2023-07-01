@@ -3,11 +3,13 @@ import React, {useState,useEffect} from 'react'
 import data from '../../data.json'
 import Image from 'next/image'
 import Link from 'next/link'
+import Modal from '../Modal/Modal'
 
 const List = () => {
   const [selectedStatus, setSelectedStatus]=useState<string>('');
   const [filteredList, setFilteredList]=useState(data);
   const [totalInvoices, setTotalInvoices]=useState(null);
+  const [isOpen, setIsOpen]=useState<boolean>(false)
   const invoices=data;
 
   const handleChange=(e:any)=>{
@@ -22,6 +24,12 @@ const List = () => {
       }
   }
 
+  const openModal=()=>{
+    setIsOpen(true)
+  }
+  const closeModal=()=>{
+    setIsOpen(false);
+  }
    //calculate total invoices
    const totalNum=(data:any)=>{
        const total=data.length;
@@ -71,12 +79,15 @@ const List = () => {
     </svg>
   </div>
 </div>
-    <button className='h-12 bg-[var(--color-dark-purple)] p-4 rounded-3xl flex gap-2 items-center justify-center hover:bg-[var(--color-light-purple)] transition ease-in-out duration-700'>   
+    <button onClick={openModal} className='h-12 bg-[var(--color-dark-purple)] p-4 rounded-3xl flex gap-2 items-center justify-center hover:bg-[var(--color-light-purple)] transition ease-in-out duration-700'>   
         <div className=' bg-slate-50 rounded-full w-6 h-6 flex justify-center items-center'>
            <Image src='/assets/icon-plus.svg' alt='plus' width={10} height={10}/>
         </div>
         <p className='text-[var(--color-light)]'>New invoice</p>
     </button>
+    <Modal isOpen={isOpen} onClose={closeModal}>
+        <h1>Modal</h1>
+    </Modal>
     </div>
  </section>
        <section 

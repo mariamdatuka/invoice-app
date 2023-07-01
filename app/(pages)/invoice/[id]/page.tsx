@@ -1,6 +1,9 @@
+'use client'
+
 import data from '../../../../data.json'
 import Image from 'next/image';
 import { formatDate } from '@/components/common/formatDate';
+import { useRouter } from 'next/navigation';
 
 type Props = {
     params: {
@@ -9,6 +12,8 @@ type Props = {
   };
 
 const Page = ({params}:Props) => {
+
+  const router=useRouter();
     
 const {id}=params
 const invoice=data.find((inv)=>inv.id===id);
@@ -21,7 +26,7 @@ const paymentDue=invoice && formatDate(invoice.paymentDue)
     {invoice && (
         <>
   <main className='flex flex-col items-center gap-6'>
-      <button className='flex gap-3 justify-center items-center'>
+      <button className='flex gap-3 justify-center items-center' onClick={()=>router.push('/')}>
           <Image src='../../../../assets/icon-arrow-left.svg' alt='arrowleft' width={7} height={7}/>
           <p>Go back</p>
       </button>
@@ -71,9 +76,24 @@ const paymentDue=invoice && formatDate(invoice.paymentDue)
                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice.senderAddress.country}</p>
                  </div>
             </div>
-            <section className='grid grid-cols-4 grid-rows-2 mt-10 bg-[var(--bg-gray)]'>
-                    <h1>hi</h1>
+            <section className='grid grid-cols-5  mt-10 bg-[var(--bg-gray)] px-4 py-6'>
+                    <div className='col-span-2 text-[var(--color-light-gray)] text-xs'>item name</div>
+                    <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>QTY</div>
+                    <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>Price</div>
+                    <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>total</div>
+                    {invoice.items.map((itm)=>(
+                      <div className='grid-rows-1' key={invoice.id}>
+                         <p>{itm.name}</p>
+                         <p>{itm.quantity}</p>
+                         <p>{itm.price}</p>
+                         <p>{itm.total}</p>
+                      </div>
+                    ))}
             </section>
+            <div className='px-4 py-6 flex items-center justify-between bg-[var(--color-dark-blue)] rounded-md'>
+                <p className='text-xs text-[var(--color-white)]'>Amount Due</p>
+                <h2 className='text-2xl text-[var(--color-white)]'>£{invoice.total}</h2>
+            </div>
       </section>
     </main>
         </>

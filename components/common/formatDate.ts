@@ -7,3 +7,4 @@ export const formatDate=(dateString:string)=>{
 
    return  `${day} ${month} ${year}`;
 }
+
