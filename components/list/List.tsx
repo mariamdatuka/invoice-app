@@ -10,7 +10,15 @@ const List = () => {
   const [filteredList, setFilteredList]=useState(data);
   const [totalInvoices, setTotalInvoices]=useState(null);
   const [isOpen, setIsOpen]=useState<boolean>(false)
+  const [rows, setRows]=useState<Array<any>>([]);
   const invoices=data;
+
+  const addRow=()=>{
+     const newRow={
+        id:Date.now(),
+     }
+     setRows([...rows, newRow])
+  }
 
   const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
@@ -44,7 +52,7 @@ const List = () => {
 
   return (
     <>
-       <section className='flex items-center justify-between'>
+  <section className='flex items-center justify-between'>
     <div className='flex flex-col gap-2'>
          <h1 className='text-4xl font-bold'>Invoices</h1>
          <p className='text-[var(--color-dark-gray)] text-xs'>There are total {totalInvoices} invoices</p>
@@ -85,9 +93,11 @@ const List = () => {
         </div>
         <p className='text-[var(--color-light)]'>New invoice</p>
     </button>
-    <Modal isOpen={isOpen} onClose={closeModal}>
-        <h2>New Invoice</h2>  
-        <p>bill from</p>
+    <Modal isOpen={isOpen}>
+      <main>
+        <h2 className='font-bold text-2xl'>New Invoice</h2>
+      <section className='flex flex-col gap-5 mt-2'>   
+        <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill from</p>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
           <input className='input w-96'type='text'/>
@@ -105,8 +115,10 @@ const List = () => {
              <label className='label'>Country</label>
              <input className='input w-28'type='text'/>
           </div>
-       </div>
-       <p>bill to</p>
+        </div>
+       </section> 
+     <section className='flex flex-col gap-5 mt-6'>
+       <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill to</p>
         <div className='flexbox'>
           <label className='label'>Client's Name</label>
           <input className='input w-96'type='text'/>
@@ -141,14 +153,57 @@ const List = () => {
            <div className='flexbox'>
               <label className='label'>Payment terms</label>
               <select className='w-44 input'>
-                  <option value='1'>1</option>
-                  <option value='2'>2</option>
-                  <option value='3'>3</option>
+                  <option value='Next 30 Days'>Next 30 Days</option>
+                  <option value='Next 1 Day'>Next 1 Day</option>
+                  <option value='Next 7 Days'>Next 7 Days</option>
+                  <option value='Next 14 Days'>Next 14 Days</option>      
               </select>
            </div>
-          
-       </div>
-        
+         </div>
+         <div className='flexbox'>
+             <label className='label'>Project Description</label>
+             <input className='input w-96'type='text' placeholder='e.g Graphic design service'/>
+          </div>
+      </section>
+      <section className='mt-6'>
+          <h3 className='text-lg text-[var(--color-dark-gray)] font-bold'>Item List</h3>
+          <div className='grid grid-cols-6 my-4 place-items-start gap-2'>
+               <div className='col-span-2 smallFont'>item Name</div>
+               <div className='col-span-1 smallFont'>Qty.</div>
+               <div className='col-span-1 smallFont'>Price</div>
+               <div className='col-span-1 smallFont'>Total</div>
+          </div>
+           {
+             rows?.map((itm,index)=>(
+               <div key={index} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
+                    <div className='col-span-2'>
+                        <input className='w-40 input'type='text'/>
+                    </div>
+                    <div className='col-span-1'>
+                        <input type='text' className='input w-11'/>
+                    </div>
+                    <div className='col-span-1'>
+                        <input type='text' className='input w-24'/>
+                    </div>
+                    <div className='col-span-1 self-center'>
+                         price
+                    </div>
+                    <div className='col-span-1 self-center'>
+                       <Image src='./assets/icon-delete.svg' alt='delete' width={10} height={10}/>
+                    </div>
+               </div>
+             ))
+           }
+          <button onClick={addRow} className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
+      </section>
+      <div className='flex items-center justify-between mt-6'>
+          <button  onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
+          <div className='flex gap-3  justify-center items-center'>
+              <button className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
+              <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
+          </div>
+      </div>
+     </main>    
     </Modal>
     </div>
  </section>
