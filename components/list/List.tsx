@@ -86,7 +86,69 @@ const List = () => {
         <p className='text-[var(--color-light)]'>New invoice</p>
     </button>
     <Modal isOpen={isOpen} onClose={closeModal}>
-        <h1>Modal</h1>
+        <h2>New Invoice</h2>  
+        <p>bill from</p>
+        <div className='flexbox'>
+          <label className='label'>Street Address</label>
+          <input className='input w-96'type='text'/>
+        </div>
+       <div className='flex gap-6 items-center justify-start'>
+          <div className='flexbox'>
+             <label className='label'>City</label>
+             <input className='input w-28'type='text'/>
+          </div>
+          <div className='flexbox'>
+             <label className='label'>Post Code</label>
+             <input className='input w-28'type='number'/>
+          </div>
+          <div className='flexbox'>
+             <label className='label'>Country</label>
+             <input className='input w-28'type='text'/>
+          </div>
+       </div>
+       <p>bill to</p>
+        <div className='flexbox'>
+          <label className='label'>Client's Name</label>
+          <input className='input w-96'type='text'/>
+        </div>
+        <div className='flexbox'>
+          <label className='label'>Client's Email</label>
+          <input className='input w-96'type='text'/>
+        </div>
+        <div className='flexbox'>
+          <label className='label'>Street Address</label>
+          <input className='input w-96'type='text'/>
+        </div>
+       <div className='flex gap-6 items-center justify-start'>
+          <div className='flexbox'>
+             <label className='label'>City</label>
+             <input className='input w-28'type='text'/>
+          </div>
+          <div className='flexbox'>
+             <label className='label'>Post Code</label>
+             <input className='input w-28'type='number'/>
+          </div>
+          <div className='flexbox'>
+             <label className='label'>Country</label>
+             <input className='input w-28'type='text'/>
+          </div>
+       </div>
+       <div className='flex gap-6 items-center justify-start'>
+           <div className='flexbox'>
+              <label className='label'>Invoice Date</label>
+              <input className='input w-44'type='date'/>
+           </div>
+           <div className='flexbox'>
+              <label className='label'>Payment terms</label>
+              <select className='w-44 input'>
+                  <option value='1'>1</option>
+                  <option value='2'>2</option>
+                  <option value='3'>3</option>
+              </select>
+           </div>
+          
+       </div>
+        
     </Modal>
     </div>
  </section>

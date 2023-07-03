@@ -12,7 +12,7 @@ const Modal = ({isOpen,onClose,children}:Props) => {
     {
      isOpen && <>
     <div className="fixed inset-0 flex items-center justify-start bg-black bg-opacity-50 ml-24">
-      <div className='bg-white w-64 h-screen p-4 rounded-md'>
+      <div className='bg-white w-2/4 h-screen p-4 rounded-md'>
           {children}
         <button onClick={onClose}>Close Modal</button>
       </div>
