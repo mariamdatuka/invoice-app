@@ -4,6 +4,9 @@ import data from '../../data.json'
 import Image from 'next/image'
 import Link from 'next/link'
 import Modal from '../Modal/Modal'
+import { useForm } from 'react-hook-form';
+import { yupResolver } from "@hookform/resolvers/yup"
+import * as Yup from "yup"
 
 const List = () => {
   const [selectedStatus, setSelectedStatus]=useState<string>('');
@@ -13,17 +16,43 @@ const List = () => {
   const [rows, setRows]=useState<Array<any>>([]);
   const invoices=data;
 
+  const schema = Yup.object().shape({
+    address: Yup.string().required('can not be empty'),
+    city: Yup.string().required('can not be empty'),
+    postCode: Yup.string().required('can not be empty'),
+    country: Yup.string().required('can not be empty'),
+  });
+
+const {register,handleSubmit, formState:{errors}}=useForm({
+  mode:'onBlur',
+  resolver:yupResolver(schema),
+  defaultValues:{
+    address:'',
+    city:'',
+    postCode:'',
+    country:''
+  }
+})
+
+const onSubmit = (data:any) => {
+  console.log(data);
+};
+
+
   const addRow=()=>{
      const newRow={
         id:Date.now(),
      }
      setRows([...rows, newRow])
   }
-
+  const deleteRow=(id:number)=>{
+        console.log('bla')
+        const updatedRows= rows.filter((itm)=>itm.id!==id);
+        setRows(updatedRows);
+      }
   const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
-
   const filteredArray=(data:any,selectedStatus:string)=>{
       if(selectedStatus===''){
         return data;
@@ -31,7 +60,6 @@ const List = () => {
          return data.filter((item:any)=>item.status===selectedStatus)
       }
   }
-
   const openModal=()=>{
     setIsOpen(true)
   }
@@ -96,24 +124,29 @@ const List = () => {
     <Modal isOpen={isOpen}>
       <main>
         <h2 className='font-bold text-2xl'>New Invoice</h2>
+      <form onSubmit={handleSubmit(onSubmit)}> 
       <section className='flex flex-col gap-5 mt-2'>   
         <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill from</p>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text'/>
+          <input className='input w-96'type='text' {...register('address')}/>
+          <span className='error'>{errors.address?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text'/>
+             <input className='input w-28'type='text' {...register('city')}/>
+             <span className='error'>{errors.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='number'/>
+             <input className='input w-28'type='number' {...register('postCode')}/>
+             <span className='error'>{errors.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text'/>
+             <input className='input w-28'type='text' {...register('country')}/>
+             <span className='error'>{errors.country?.message}</span>
           </div>
         </div>
        </section> 
@@ -174,8 +207,8 @@ const List = () => {
                <div className='col-span-1 smallFont'>Total</div>
           </div>
            {
-             rows?.map((itm,index)=>(
-               <div key={index} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
+             rows?.map((itm)=>(
+               <div key={itm.id} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
                     <div className='col-span-2'>
                         <input className='w-40 input'type='text'/>
                     </div>
@@ -188,7 +221,7 @@ const List = () => {
                     <div className='col-span-1 self-center'>
                          price
                     </div>
-                    <div className='col-span-1 self-center'>
+                    <div className='col-span-1 self-center' onClick={()=>deleteRow(itm.id)}>
                        <Image src='./assets/icon-delete.svg' alt='delete' width={10} height={10}/>
                     </div>
                </div>
@@ -203,6 +236,7 @@ const List = () => {
               <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
+      </form> 
      </main>    
     </Modal>
     </div>
