@@ -1,3 +1,4 @@
+import { ReduxProvider } from '@/store/provider'
 import './globals.css'
 import { League_Spartan } from 'next/font/google'
 
@@ -15,7 +16,11 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={spartan.className}>{children}</body>
+      <body className={spartan.className}>
+          <ReduxProvider>
+              {children}
+          </ReduxProvider>
+      </body>
     </html>
   )
 }

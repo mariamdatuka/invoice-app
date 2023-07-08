@@ -1,20 +1,33 @@
 'use client'
 import React, {useState,useEffect} from 'react'
-import data from '../../data.json'
 import Image from 'next/image'
 import Link from 'next/link'
 import Modal from '../Modal/Modal'
 import { useForm } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/store/store'
+import { useAppSelector } from '@/store/store'
+import { fetchInvoicesAsync } from '@/store/reducers/invoiceSlice'
+
 
 const List = () => {
-  const [selectedStatus, setSelectedStatus]=useState<string>('');
+ /* const [selectedStatus, setSelectedStatus]=useState<string>('');
   const [filteredList, setFilteredList]=useState(data);
   const [totalInvoices, setTotalInvoices]=useState(null);
+  */
   const [isOpen, setIsOpen]=useState<boolean>(false)
   const [rows, setRows]=useState<Array<any>>([]);
-  const invoices=data;
+
+  const dispatch = useDispatch<AppDispatch>();
+  const invoices = useAppSelector((state) => state.invoices.invoices);
+  const loading = useAppSelector((state) => state.invoices.loading);
+  const error = useAppSelector((state) => state.invoices.error)
+
+useEffect(()=>{
+  dispatch(fetchInvoicesAsync());
+}, [])
 
   const schema = Yup.object().shape({
     address: Yup.string().required('can not be empty'),
@@ -50,9 +63,10 @@ const onSubmit = (data:any) => {
         const updatedRows= rows.filter((itm)=>itm.id!==id);
         setRows(updatedRows);
       }
-  const handleChange=(e:any)=>{
+ /* const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
+  */
   const filteredArray=(data:any,selectedStatus:string)=>{
       if(selectedStatus===''){
         return data;
@@ -67,30 +81,28 @@ const onSubmit = (data:any) => {
     setIsOpen(false);
   }
    //calculate total invoices
-   const totalNum=(data:any)=>{
+  /* const totalNum=(data:any)=>{
        const total=data.length;
        setTotalInvoices(total);
    }
-
-   useEffect(()=>{
+*/
+   /*useEffect(()=>{
     const filtered=filteredArray(invoices, selectedStatus);
     setFilteredList(filtered);
     totalNum(filtered);
 },[selectedStatus]);
-
+*/
   return (
     <>
   <section className='flex items-center justify-between'>
     <div className='flex flex-col gap-2'>
          <h1 className='text-4xl font-bold'>Invoices</h1>
-         <p className='text-[var(--color-dark-gray)] text-xs'>There are total {totalInvoices} invoices</p>
+         <p className='text-[var(--color-dark-gray)] text-xs'>There are total  invoices</p>
     </div>
   <div className='flex justify-center items-center gap-3'> 
     <div className="relative inline-block">
   <select
     className="block appearance-none bg-white pl-3 pr-8 py-2 text-gray-900 rounded-md leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
-    value={selectedStatus}
-    onChange={handleChange}
   > 
     <option value="">
       Filter by status
@@ -243,7 +255,7 @@ const onSubmit = (data:any) => {
  </section>
        <section 
              className='flex flex-col gap-3 mt-12'>
-           {filteredList.map((item:any)=>(
+           {invoices.map((item:any)=>(
            <Link key={item.id} href={`/invoice/${item.id}`}> 
              <main className='flex gap-3 bg-[var(--color-white)] p-5 rounded-lg items-center justify-around h-16'>
                  <p className='text-lg text-[var(--color-black)] font-bold'>#{item.id}</p>
