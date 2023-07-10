@@ -3,13 +3,14 @@ import React, {useState,useEffect} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Modal from '../Modal/Modal'
-import { useForm } from 'react-hook-form';
+import { useForm,Resolver } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch } from '@/store/store'
 import { useAppSelector } from '@/store/store'
 import { fetchInvoicesAsync } from '@/store/reducers/invoiceSlice'
+import { Invoice } from '@/types'
 
 
 const List = () => {
@@ -17,9 +18,7 @@ const List = () => {
   const [filteredList, setFilteredList]=useState(data);
   const [totalInvoices, setTotalInvoices]=useState(null);
   */
-  const [isOpen, setIsOpen]=useState<boolean>(false)
-  const [rows, setRows]=useState<Array<any>>([]);
-
+  const [isOpen, setIsOpen]=useState<boolean>(false);
   const dispatch = useDispatch<AppDispatch>();
   const invoices = useAppSelector((state) => state.invoices.invoices);
   const loading = useAppSelector((state) => state.invoices.loading);
@@ -29,23 +28,77 @@ useEffect(()=>{
   dispatch(fetchInvoicesAsync());
 }, [])
 
-  const schema = Yup.object().shape({
-    address: Yup.string().required('can not be empty'),
-    city: Yup.string().required('can not be empty'),
-    postCode: Yup.string().required('can not be empty'),
-    country: Yup.string().required('can not be empty'),
-  });
+const schema = Yup.object().shape({
+  senderAddress: Yup.object().shape({
+    street: Yup.string().required('Street Address is required'),
+    city: Yup.string().required('City is required'),
+    postCode: Yup.string().required('Post Code is required'),
+    country: Yup.string().required('Country is required'),
+  }),
+  clientAddress: Yup.object().shape({
+    street: Yup.string().required('Street Address is required'),
+    city: Yup.string().required('City is required'),
+    postCode: Yup.string().required('Post Code is required'),
+    country: Yup.string().required('Country is required'),
+  }),
+   clientEmail:Yup.string().required('required'),
+   clientName:Yup.string().required('required'),
+   createdAt:Yup.string().required('required'),
+   paymentDue:Yup.string().required('required'),
+   description:Yup.string().required('required'),
+   paymentTerms:Yup.number().required(),
+   status:Yup.string().required(),
+   total:Yup.number().required('required'),
+   items: Yup.array().of(
+    Yup.object().shape({
+      name: Yup.string().required('Item Name is required'),
+      quantity: Yup.number().required('Quantity is required').min(1, 'Quantity must be at least 1'),
+      price: Yup.number().required('Price is required').min(0, 'Price must be a positive number'),
+      total: Yup.number().required('Total is required').min(0, 'Total must be a positive number'),
+    })
+  ),
 
-const {register,handleSubmit, formState:{errors}}=useForm({
+  
+});
+
+const resolver: Resolver<Invoice> = yupResolver(schema);
+const {register,handleSubmit, formState:{errors}, watch,setValue}=useForm({
   mode:'onBlur',
-  resolver:yupResolver(schema),
+  resolver,
   defaultValues:{
-    address:'',
-    city:'',
-    postCode:'',
-    country:''
+    id:'',
+    createdAt:'',
+    paymentDue:'',
+    description:'',
+    paymentTerms:0,
+    clientName:'',
+    clientEmail:'',
+    status:'pending',
+    senderAddress:{
+        street:'',
+        city:'',
+        postCode:'',
+        country:'',
+    },
+    clientAddress:{
+      street:'',
+      city:'',
+      postCode:'',
+      country:'',
+    },
+    items:[
+      {
+        name:'',
+        quantity:0,
+        price:0,
+        total:0,
+      }
+    ],
+    total:0,
   }
 })
+
+const items=watch('items', [])
 
 const onSubmit = (data:any) => {
   console.log(data);
@@ -54,14 +107,16 @@ const onSubmit = (data:any) => {
 
   const addRow=()=>{
      const newRow={
-        id:Date.now(),
+        name:'',
+        price:0,
+        quantity:0,
+        total:1    
      }
-     setRows([...rows, newRow])
+     setValue('items',[...items,newRow])
   }
-  const deleteRow=(id:number)=>{
-        console.log('bla')
-        const updatedRows= rows.filter((itm)=>itm.id!==id);
-        setRows(updatedRows);
+  const deleteRow=(i:number)=>{
+        const updatedRows= items.filter((_,index)=>index!==i);
+        setValue('items', [...updatedRows]);
       }
  /* const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
@@ -92,6 +147,8 @@ const onSubmit = (data:any) => {
     totalNum(filtered);
 },[selectedStatus]);
 */
+
+
   return (
     <>
   <section className='flex items-center justify-between'>
@@ -141,24 +198,24 @@ const onSubmit = (data:any) => {
         <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill from</p>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text' {...register('address')}/>
-          <span className='error'>{errors.address?.message}</span>
+          <input className='input w-96'type='text' {...register('senderAddress.street')}/>
+          <span className='error'>{errors.senderAddress?.street?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text' {...register('city')}/>
-             <span className='error'>{errors.city?.message}</span>
+             <input className='input w-28'type='text' {...register('senderAddress.city')}/>
+             <span className='error'>{errors.senderAddress?.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='number' {...register('postCode')}/>
-             <span className='error'>{errors.postCode?.message}</span>
+             <input className='input w-28'type='number' {...register('senderAddress.postCode')}/>
+             <span className='error'>{errors.senderAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text' {...register('country')}/>
-             <span className='error'>{errors.country?.message}</span>
+             <input className='input w-28'type='text' {...register('senderAddress.country')}/>
+             <span className='error'>{errors.senderAddress?.country?.message}</span>
           </div>
         </div>
        </section> 
@@ -166,48 +223,58 @@ const onSubmit = (data:any) => {
        <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill to</p>
         <div className='flexbox'>
           <label className='label'>Client's Name</label>
-          <input className='input w-96'type='text'/>
+          <input className='input w-96'type='text' {...register('clientName')}/>
+          <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
           <label className='label'>Client's Email</label>
-          <input className='input w-96'type='text'/>
+          <input className='input w-96'type='email' {...register('clientEmail')}/>
+          <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text'/>
+          <input className='input w-96'type='text'{...register('clientAddress.street')}/>
+          <span className='error'>{errors.clientAddress?.street?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text'/>
+             <input className='input w-28'type='text' {...register('clientAddress.city')}/>
+             <span className='error'>{errors.clientAddress?.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='number'/>
+             <input className='input w-28'type='number' {...register('clientAddress.postCode')}/>
+             <span className='error'>{errors.clientAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text'/>
+             <input className='input w-28'type='text' {...register('clientAddress.country')}/>
+             <span className='error'>{errors.clientAddress?.country?.message}</span>
           </div>
        </div>
        <div className='flex gap-6 items-center justify-start'>
            <div className='flexbox'>
               <label className='label'>Invoice Date</label>
-              <input className='input w-44'type='date'/>
+              <input className='input w-44'type='date'{...register('createdAt')}/>
+              <span className='error'>{errors.createdAt?.message}</span>
            </div>
            <div className='flexbox'>
               <label className='label'>Payment terms</label>
-              <select className='w-44 input'>
+              <select className='w-44 input' {...register('paymentDue')}>
                   <option value='Next 30 Days'>Next 30 Days</option>
                   <option value='Next 1 Day'>Next 1 Day</option>
                   <option value='Next 7 Days'>Next 7 Days</option>
                   <option value='Next 14 Days'>Next 14 Days</option>      
               </select>
+              <span className='error'>{errors.paymentDue?.message}</span>
            </div>
          </div>
          <div className='flexbox'>
              <label className='label'>Project Description</label>
-             <input className='input w-96'type='text' placeholder='e.g Graphic design service'/>
+             <input className='input w-96'type='text' placeholder='e.g Graphic design service'
+              {...register('description')}/>
+              <span className='error'>{errors.description?.message}</span>
           </div>
       </section>
       <section className='mt-6'>
@@ -219,21 +286,25 @@ const onSubmit = (data:any) => {
                <div className='col-span-1 smallFont'>Total</div>
           </div>
            {
-             rows?.map((itm)=>(
+             items?.map((itm:any,index)=>(
                <div key={itm.id} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
                     <div className='col-span-2'>
-                        <input className='w-40 input'type='text'/>
+                        <input className='w-40 input'type='text'{...register(`items.${itm.id}.name`)}/>
                     </div>
                     <div className='col-span-1'>
-                        <input type='text' className='input w-11'/>
+                        <input type='number' className='input w-11' {...register(`items.${itm.id}.quantity`)}
+                        />
                     </div>
                     <div className='col-span-1'>
-                        <input type='text' className='input w-24'/>
+                        <input type='text' className='input w-24' {...register(`items.${itm.id}.price`)}
+                        />
                     </div>
                     <div className='col-span-1 self-center'>
-                         price
+                         <input type='number' className='input w-24' {...register(`items.${itm.id}.total`)}
+                         value={itm?.quantity * itm?.price} readOnly 
+                          />
                     </div>
-                    <div className='col-span-1 self-center' onClick={()=>deleteRow(itm.id)}>
+                    <div className='col-span-1 self-center' onClick={()=>deleteRow(index)}>
                        <Image src='./assets/icon-delete.svg' alt='delete' width={10} height={10}/>
                     </div>
                </div>
