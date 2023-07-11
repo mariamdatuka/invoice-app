@@ -12,6 +12,12 @@ import { useAppSelector } from '@/store/store'
 import { fetchInvoicesAsync } from '@/store/reducers/invoiceSlice'
 import { Invoice } from '@/types'
 
+interface Item {
+  name: string;
+  price: number;
+  quantity: number;
+  total: number;
+}
 
 const List = () => {
  /* const [selectedStatus, setSelectedStatus]=useState<string>('');
@@ -19,6 +25,7 @@ const List = () => {
   const [totalInvoices, setTotalInvoices]=useState(null);
   */
   const [isOpen, setIsOpen]=useState<boolean>(false);
+  const [rows,setRows]=useState<Item[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const invoices = useAppSelector((state) => state.invoices.invoices);
   const loading = useAppSelector((state) => state.invoices.loading);
@@ -62,7 +69,7 @@ const schema = Yup.object().shape({
 });
 
 const resolver: Resolver<Invoice> = yupResolver(schema);
-const {register,handleSubmit, formState:{errors}, watch,setValue}=useForm({
+const {register,handleSubmit, formState:{errors},setValue, watch}=useForm({
   mode:'onBlur',
   resolver,
   defaultValues:{
@@ -98,26 +105,27 @@ const {register,handleSubmit, formState:{errors}, watch,setValue}=useForm({
   }
 })
 
-const items=watch('items', [])
+/*const items = watch('items', []);*/
 
 const onSubmit = (data:any) => {
   console.log(data);
 };
 
-
-  const addRow=()=>{
+const addRow=()=>{
      const newRow={
         name:'',
         price:0,
         quantity:0,
-        total:1    
+        total:0,    
      }
-     setValue('items',[...items,newRow])
+     setRows([newRow, ...rows])
   }
   const deleteRow=(i:number)=>{
-        const updatedRows= items.filter((_,index)=>index!==i);
-        setValue('items', [...updatedRows]);
+        const updatedRows= rows.filter((_:any,index:number)=>index!==i);
+        setRows(updatedRows);
       }
+
+     
  /* const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
@@ -286,7 +294,7 @@ const onSubmit = (data:any) => {
                <div className='col-span-1 smallFont'>Total</div>
           </div>
            {
-             items?.map((itm:any,index)=>(
+             rows?.map((itm:any,index:number)=>(
                <div key={itm.id} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
                     <div className='col-span-2'>
                         <input className='w-40 input'type='text'{...register(`items.${itm.id}.name`)}/>
@@ -301,7 +309,7 @@ const onSubmit = (data:any) => {
                     </div>
                     <div className='col-span-1 self-center'>
                          <input type='number' className='input w-24' {...register(`items.${itm.id}.total`)}
-                         value={itm?.quantity * itm?.price} readOnly 
+                          readOnly 
                           />
                     </div>
                     <div className='col-span-1 self-center' onClick={()=>deleteRow(index)}>
