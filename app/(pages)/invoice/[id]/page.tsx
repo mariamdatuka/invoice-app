@@ -1,9 +1,13 @@
 'use client'
-
-import data from '../../../../data.json'
+import { useEffect } from 'react';
 import Image from 'next/image';
 import { formatDate } from '@/components/common/formatDate';
 import { useRouter } from 'next/navigation';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch } from '@/store/store'
+import { fetchInvoicesAsync} from '@/store/reducers/invoiceSlice';
+import { useAppSelector } from '@/store/store'
+
 
 type Props = {
     params: {
@@ -12,11 +16,15 @@ type Props = {
   };
 
 const Page = ({params}:Props) => {
-
-  const router=useRouter();
-    
+const dispatch = useDispatch<AppDispatch>();
+const invoices = useAppSelector((state) => state.invoices.invoices);
+const router=useRouter();
 const {id}=params
-const invoice=data.find((inv)=>inv.id===id);
+const invoice=invoices.find((inv)=>inv.id===id);
+
+useEffect(()=>{
+dispatch(fetchInvoicesAsync());
+}, [])
 
 const transformedDate= invoice && formatDate(invoice.createdAt)
 const paymentDue=invoice && formatDate(invoice.paymentDue)

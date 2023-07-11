@@ -6,7 +6,7 @@ import Modal from '../Modal/Modal'
 import { useForm,Resolver } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch} from 'react-redux';
 import { AppDispatch } from '@/store/store'
 import { useAppSelector } from '@/store/store'
 import { fetchInvoicesAsync } from '@/store/reducers/invoiceSlice'
@@ -17,13 +17,15 @@ interface Item {
   price: number;
   quantity: number;
   total: number;
-}
+}[]
 
 const List = () => {
- /* const [selectedStatus, setSelectedStatus]=useState<string>('');
-  const [filteredList, setFilteredList]=useState(data);
+ /*
+  
   const [totalInvoices, setTotalInvoices]=useState(null);
   */
+  const [selectedStatus, setSelectedStatus]=useState<string>('');
+  const [filteredList, setFilteredList]=useState([]);
   const [isOpen, setIsOpen]=useState<boolean>(false);
   const [rows,setRows]=useState<Item[]>([]);
   const dispatch = useDispatch<AppDispatch>();
@@ -105,7 +107,8 @@ const {register,handleSubmit, formState:{errors},setValue, watch}=useForm({
   }
 })
 
-/*const items = watch('items', []);*/
+const items = watch('items');
+
 
 const onSubmit = (data:any) => {
   console.log(data);
@@ -124,12 +127,11 @@ const addRow=()=>{
         const updatedRows= rows.filter((_:any,index:number)=>index!==i);
         setRows(updatedRows);
       }
-
-     
- /* const handleChange=(e:any)=>{
+  
+  const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
-  */
+  
   const filteredArray=(data:any,selectedStatus:string)=>{
       if(selectedStatus===''){
         return data;
@@ -149,12 +151,11 @@ const addRow=()=>{
        setTotalInvoices(total);
    }
 */
-   /*useEffect(()=>{
+   useEffect(()=>{
     const filtered=filteredArray(invoices, selectedStatus);
     setFilteredList(filtered);
-    totalNum(filtered);
+    
 },[selectedStatus]);
-*/
 
 
   return (
@@ -168,6 +169,7 @@ const addRow=()=>{
     <div className="relative inline-block">
   <select
     className="block appearance-none bg-white pl-3 pr-8 py-2 text-gray-900 rounded-md leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+    onChange={handleChange}
   > 
     <option value="">
       Filter by status
@@ -294,21 +296,24 @@ const addRow=()=>{
                <div className='col-span-1 smallFont'>Total</div>
           </div>
            {
-             rows?.map((itm:any,index:number)=>(
-               <div key={itm.id} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
+             rows?.map((_,index:number)=>(
+               <div key={index} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
                     <div className='col-span-2'>
-                        <input className='w-40 input'type='text'{...register(`items.${itm.id}.name`)}/>
+                        <input className='w-40 input'type='text'/>
+                        <span className='error'>{errors.items?.[index]?.name?.message}</span>
                     </div>
                     <div className='col-span-1'>
-                        <input type='number' className='input w-11' {...register(`items.${itm.id}.quantity`)}
+                        <input type='number' className='input w-11' {...register(`items.${index}.quantity`)}
                         />
+                        <span className='error'></span>
                     </div>
                     <div className='col-span-1'>
-                        <input type='text' className='input w-24' {...register(`items.${itm.id}.price`)}
+                        <input type='text' className='input w-24' {...register(`items.${index}.price`)}
                         />
                     </div>
                     <div className='col-span-1 self-center'>
-                         <input type='number' className='input w-24' {...register(`items.${itm.id}.total`)}
+                         <input type='number' className='input w-24' {...register(`items.${index}.total`)}
+                         value={items?.[index]?.quantity * items?.[index]?.price || ''}
                           readOnly 
                           />
                     </div>
@@ -334,7 +339,7 @@ const addRow=()=>{
  </section>
        <section 
              className='flex flex-col gap-3 mt-12'>
-           {invoices.map((item:any)=>(
+           {filteredList?.map((item:any)=>(
            <Link key={item.id} href={`/invoice/${item.id}`}> 
              <main className='flex gap-3 bg-[var(--color-white)] p-5 rounded-lg items-center justify-around h-16'>
                  <p className='text-lg text-[var(--color-black)] font-bold'>#{item.id}</p>
