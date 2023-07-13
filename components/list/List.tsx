@@ -9,7 +9,7 @@ import * as Yup from "yup"
 import { useDispatch} from 'react-redux';
 import { AppDispatch } from '@/store/store'
 import { useAppSelector } from '@/store/store'
-import { fetchInvoicesAsync } from '@/store/reducers/invoiceSlice'
+import { fetchInvoicesAsync,addInvoiceAsync } from '@/store/reducers/invoiceSlice'
 import { Invoice } from '@/types'
 
 interface Item {
@@ -20,10 +20,8 @@ interface Item {
 }[]
 
 const List = () => {
- /*
-  
-  const [totalInvoices, setTotalInvoices]=useState(null);
-  */
+
+  const [totalInvoices, setTotalInvoices]=useState<number|null>(null);
   const [selectedStatus, setSelectedStatus]=useState<string>('');
   const [filteredList, setFilteredList]=useState([]);
   const [isOpen, setIsOpen]=useState<boolean>(false);
@@ -60,18 +58,16 @@ const schema = Yup.object().shape({
    total:Yup.number().required('required'),
    items: Yup.array().of(
     Yup.object().shape({
-      name: Yup.string().required('Item Name is required'),
-      quantity: Yup.number().required('Quantity is required').min(1, 'Quantity must be at least 1'),
-      price: Yup.number().required('Price is required').min(0, 'Price must be a positive number'),
-      total: Yup.number().required('Total is required').min(0, 'Total must be a positive number'),
+      name: Yup.string().required('required'),
+      quantity: Yup.number().required('required').min(1, 'min 1').nullable().transform((value) => Number.isNaN(value) ? null : value ),
+      price: Yup.number().required('required').min(1, 'must be a positive number').nullable().transform((value) => Number.isNaN(value) ? null : value ),
+      total: Yup.number().required('required'),
     })
   ),
-
-  
 });
 
 const resolver: Resolver<Invoice> = yupResolver(schema);
-const {register,handleSubmit, formState:{errors},setValue, watch}=useForm({
+const {register,handleSubmit, formState:{errors},watch}=useForm({
   mode:'onBlur',
   resolver,
   defaultValues:{
@@ -108,12 +104,11 @@ const {register,handleSubmit, formState:{errors},setValue, watch}=useForm({
 })
 
 const items = watch('items');
-
-
-const onSubmit = (data:any) => {
+const onSubmit = (data:Invoice) => {
+  dispatch(addInvoiceAsync(data));
   console.log(data);
+  console.log(invoices);
 };
-
 const addRow=()=>{
      const newRow={
         name:'',
@@ -131,12 +126,14 @@ const addRow=()=>{
   const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
-  
   const filteredArray=(data:any,selectedStatus:string)=>{
       if(selectedStatus===''){
+        setTotalInvoices(data.length);
         return data;
       } else{
-         return data.filter((item:any)=>item.status===selectedStatus)
+       const filteredData = data.filter((item: any) => item.status === selectedStatus);
+       setTotalInvoices(filteredData.length);
+       return filteredData;
       }
   }
   const openModal=()=>{
@@ -145,25 +142,18 @@ const addRow=()=>{
   const closeModal=()=>{
     setIsOpen(false);
   }
-   //calculate total invoices
-  /* const totalNum=(data:any)=>{
-       const total=data.length;
-       setTotalInvoices(total);
-   }
-*/
+
    useEffect(()=>{
     const filtered=filteredArray(invoices, selectedStatus);
-    setFilteredList(filtered);
-    
-},[selectedStatus]);
-
+    setFilteredList(filtered);   
+  },[selectedStatus]);
 
   return (
     <>
   <section className='flex items-center justify-between'>
     <div className='flex flex-col gap-2'>
          <h1 className='text-4xl font-bold'>Invoices</h1>
-         <p className='text-[var(--color-dark-gray)] text-xs'>There are total  invoices</p>
+         <p className='text-[var(--color-dark-gray)] text-xs'>There are total {totalInvoices}  invoices</p>
     </div>
   <div className='flex justify-center items-center gap-3'> 
     <div className="relative inline-block">
@@ -298,24 +288,30 @@ const addRow=()=>{
            {
              rows?.map((_,index:number)=>(
                <div key={index} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
-                    <div className='col-span-2'>
-                        <input className='w-40 input'type='text'/>
+                    <div className='col-span-2 flexbox'>
+                        <input className='w-40 input'type='text' {...register(`items.${index}.name`)}/>
                         <span className='error'>{errors.items?.[index]?.name?.message}</span>
                     </div>
-                    <div className='col-span-1'>
+                    <div className='col-span-1 flexbox'>
                         <input type='number' className='input w-11' {...register(`items.${index}.quantity`)}
                         />
-                        <span className='error'></span>
+                        <span className='error'>{errors.items?.[index]?.quantity?.message}</span>
                     </div>
-                    <div className='col-span-1'>
+                    <div className='col-span-1 flexbox'>
                         <input type='text' className='input w-24' {...register(`items.${index}.price`)}
                         />
+                        {
+                           items?.[index]?.price!==null && (
+                            <span className='error'>{errors.items?.[index]?.price?.message}</span>
+)
+                        }
                     </div>
                     <div className='col-span-1 self-center'>
                          <input type='number' className='input w-24' {...register(`items.${index}.total`)}
                          value={items?.[index]?.quantity * items?.[index]?.price || ''}
                           readOnly 
                           />
+                      <span className='error'>{errors.items?.[index]?.total?.message}</span>
                     </div>
                     <div className='col-span-1 self-center' onClick={()=>deleteRow(index)}>
                        <Image src='./assets/icon-delete.svg' alt='delete' width={10} height={10}/>
@@ -326,10 +322,10 @@ const addRow=()=>{
           <button onClick={addRow} className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
       </section>
       <div className='flex items-center justify-between mt-6'>
-          <button  onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
+          <button onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
           <div className='flex gap-3  justify-center items-center'>
-              <button className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
-              <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
+              <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
+              <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
       </form> 

@@ -7,7 +7,7 @@ export const fetchInvoicesAsync = createAsyncThunk('invoices/fetchInvoices', asy
     const response = await fetchInvoices();
     return response.data;
   });
-export const addInvoiceAsync=createAsyncThunk('invoices/addInvoice', async(invoice)=>{
+export const addInvoiceAsync=createAsyncThunk('invoices/addInvoice', async(invoice:Invoice)=>{
     const response= await addInvoice(invoice);
     return response.data;
   })
@@ -48,11 +48,19 @@ const invoiceSlice=createSlice({
            state.loading=false;
            state.error=action.error.message
         })
+        .addCase(addInvoiceAsync.pending, (state)=>{
+          state.loading=true;
+          state.error=null;
+        })
         .addCase(addInvoiceAsync.fulfilled, (state,action)=>{
             state.loading=false;
             const newInvoice=action.payload;
             state.invoices=[newInvoice,...state.invoices]
         })
+        .addCase(addInvoiceAsync.rejected, (state,action)=>{
+          state.loading=false;
+          state.error=action.error.message
+       })
         .addCase(deleteInvoiceAsync.fulfilled, (state,action)=>{
             state.loading=false;
             state.invoices=state.invoices.filter((itm)=>{itm.id!==action.payload})

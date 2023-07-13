@@ -1,11 +1,12 @@
+import { Invoice } from '@/types';
 import axios from 'axios'
 
-const BASE_URL='https://invoice-app-1wi7.onrender.com/api/invoice'
+const BASE_URL='https://invoice-app-1wi7.onrender.com/api/'
 
 export const fetchInvoices=async()=>{
-    return axios.get(`${BASE_URL}`);
+    return axios.get(`${BASE_URL}/invoice`);
 }
-export const addInvoice=async(invoice:any)=>{
+export const addInvoice=async(invoice:Invoice)=>{
     return axios.post(`${BASE_URL}/add`, invoice)
 }
 export const deleteInvoice=async(invoiceId:any)=>{
