@@ -28,12 +28,10 @@ const List = () => {
   const [rows,setRows]=useState<Item[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const invoices = useAppSelector((state) => state.invoices.invoices);
-  const loading = useAppSelector((state) => state.invoices.loading);
-  const error = useAppSelector((state) => state.invoices.error)
 
-useEffect(()=>{
-  dispatch(fetchInvoicesAsync());
-}, [])
+  useEffect(()=>{
+     dispatch(fetchInvoicesAsync())
+  },[])
 
 const schema = Yup.object().shape({
   senderAddress: Yup.object().shape({

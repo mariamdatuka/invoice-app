@@ -11,11 +11,11 @@ export const addInvoiceAsync=createAsyncThunk('invoices/addInvoice', async(invoi
     const response= await addInvoice(invoice);
     return response.data;
   })
-export const deleteInvoiceAsync=createAsyncThunk('invoices/deleteInvoice', async(id)=>{
+export const deleteInvoiceAsync=createAsyncThunk('invoices/deleteInvoice', async(id:string)=>{
     const response=await deleteInvoice(id);
     return response.data;
   })
-export const upateInvoiceAsync=createAsyncThunk('invoices/updateInvoice', async(id)=>{
+export const upateInvoiceAsync=createAsyncThunk('invoices/updateInvoice', async(id:string)=>{
     const response=await updateInvoice(id);
     return response.data;
   })
@@ -58,12 +58,20 @@ const invoiceSlice=createSlice({
             state.invoices=[newInvoice,...state.invoices]
         })
         .addCase(addInvoiceAsync.rejected, (state,action)=>{
-          state.loading=false;
-          state.error=action.error.message
+            state.loading=false;
+            state.error=action.error.message
+       })
+        .addCase(deleteInvoiceAsync.pending, (state)=>{
+            state.loading=true;
+            state.error=null;
        })
         .addCase(deleteInvoiceAsync.fulfilled, (state,action)=>{
             state.loading=false;
             state.invoices=state.invoices.filter((itm)=>{itm.id!==action.payload})
+       })
+        .addCase(deleteInvoiceAsync.rejected, (state,action)=>{
+            state.loading=false;
+            state.error=action.error.message
         })
         .addCase(upateInvoiceAsync.fulfilled, (state,action)=>{
             const updatedInvoice=action.payload;
