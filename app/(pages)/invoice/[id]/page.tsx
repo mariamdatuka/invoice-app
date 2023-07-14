@@ -7,7 +7,7 @@ import { useDispatch} from 'react-redux';
 import { AppDispatch } from '@/store/store'
 import { fetchInvoicesAsync, deleteInvoiceAsync} from '@/store/reducers/invoiceSlice';
 import { useAppSelector } from '@/store/store'
-import Modal from '@/components/Modal/Modal';
+import SmallModal from '@/components/Modal/SmallModal';
 
 type Props = {
     params: {
@@ -36,6 +36,12 @@ const closeModal=()=>{
 const transformedDate= invoice && formatDate(invoice.createdAt)
 const paymentDue=invoice && formatDate(invoice.paymentDue)
 
+const handleDelete=(id:string)=>{
+   dispatch(deleteInvoiceAsync(id));
+   console.log(invoices);
+   router.push("/");
+}
+
   return (
     <>
     {invoice && (
@@ -56,16 +62,16 @@ const paymentDue=invoice && formatDate(invoice.paymentDue)
              <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300'>Mark as Paid</button>
          </div>
       </section>
-      <Modal isOpen={isOpen} className='justify-center ml-0' divClassName='h-60'>
+      <SmallModal isOpen={isOpen}>
         <div className='flex flex-col items-start gap-2 mt-5'>
            <p className='text-2xl font-bold'>Confirm Deletion</p>
            <p className='smallFont'>Are you sure you want to delete invoice {invoice.id}? This action cannot be undone.</p>
            <div className='flex items-center justify-center gap-3 self-end mt-6'>
               <button onClick={closeModal} className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300'>Cancel</button>
-              <button className='bg-[var(--color-dark-red)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-red)] transition-all duration-300' onClick={()=>dispatch(deleteInvoiceAsync(invoice.id))}>Delete</button>
+              <button className='bg-[var(--color-dark-red)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-red)] transition-all duration-300' onClick={()=>handleDelete(invoice.id)}>Delete</button>
            </div>
         </div>   
-      </Modal>
+      </SmallModal>
       <section className='w-10/12 bg-[var(--color-white)] rounded-lg p-6'>
             <div className='grid grid-cols-4'>
                  <div className='flex flex-col justify-center items-center gap-5'>

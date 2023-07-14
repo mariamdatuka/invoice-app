@@ -9,9 +9,9 @@ export const fetchInvoices=async()=>{
 export const addInvoice=async(invoice:Invoice)=>{
     return axios.post(`${BASE_URL}add`, invoice)
 }
-export const deleteInvoice=async(invoiceId:any)=>{
+export const deleteInvoice=async(invoiceId:string)=>{
     return axios.delete(`${BASE_URL}add/${invoiceId}`)
 }
-export const updateInvoice=async(invoiceId:any)=>{
+export const updateInvoice=async(invoiceId:string)=>{
     return axios.put(`${BASE_URL}add/${invoiceId}`)
 }

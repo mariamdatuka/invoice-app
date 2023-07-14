@@ -33,6 +33,13 @@ const List = () => {
      dispatch(fetchInvoicesAsync())
   },[])
 
+  const openModal=()=>{
+    setIsOpen(true)
+  }
+  const closeModal=()=>{
+    setIsOpen(false);
+  }
+  
 const schema = Yup.object().shape({
   senderAddress: Yup.object().shape({
     street: Yup.string().required('Street Address is required'),
@@ -65,7 +72,7 @@ const schema = Yup.object().shape({
 });
 
 const resolver: Resolver<Invoice> = yupResolver(schema);
-const {register,handleSubmit, formState:{errors},watch}=useForm({
+const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
   mode:'onBlur',
   resolver,
   defaultValues:{
@@ -96,7 +103,7 @@ const {register,handleSubmit, formState:{errors},watch}=useForm({
         price:0,
         total:0,
       }
-    ],
+     ],
     total:0,
   }
 })
@@ -106,6 +113,8 @@ const onSubmit = (data:Invoice) => {
   dispatch(addInvoiceAsync(data));
   console.log(data);
   console.log(invoices);
+  reset();
+  closeModal();
 };
 const addRow=()=>{
      const newRow={
@@ -124,6 +133,7 @@ const addRow=()=>{
   const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
+  
   const filteredArray=(data:any,selectedStatus:string)=>{
       if(selectedStatus===''){
         setTotalInvoices(data.length);
@@ -133,12 +143,6 @@ const addRow=()=>{
        setTotalInvoices(filteredData.length);
        return filteredData;
       }
-  }
-  const openModal=()=>{
-    setIsOpen(true)
-  }
-  const closeModal=()=>{
-    setIsOpen(false);
   }
 
    useEffect(()=>{
@@ -162,9 +166,9 @@ const addRow=()=>{
     <option value="">
       Filter by status
     </option>
-    <option value="paid">Paid</option>
-    <option value="pending">Pending</option>
-    <option value="unpaid">Unpaid</option>
+    <option value="paid">paid</option>
+    <option value="pending">pending</option>
+    <option value="unpaid">unpaid</option>
   </select>
   <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
     <svg
@@ -317,7 +321,7 @@ const addRow=()=>{
                </div>
              ))
            }
-          <button onClick={addRow} className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
+          <button onClick={addRow} type='button'className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
       </section>
       <div className='flex items-center justify-between mt-6'>
           <button onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
@@ -340,7 +344,7 @@ const addRow=()=>{
                  <p className='text-md text-[var(--color-light-gray)]'>{item.paymentDue}</p>
                  <p className='text-md text-[var(--color-dark-gray)]'>{item.clientName}</p>
                  <p className='font-bold text-[var(--color-black)] text-lg'>£{item.total}</p>
-                 <div className={`status-${item.status.toLowerCase()} text-md`}>{item.status}</div>
+                 <div className={`status-${item.status} text-md`}>{item.status}</div>
                  <Image src='./assets/icon-arrow-right.svg' alt='arrowRight' width={7} height={7}/>
              </main>
           </Link>

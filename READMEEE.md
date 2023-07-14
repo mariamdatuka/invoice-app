@@ -1,8 +1,6 @@
 ## The challenge
 
-The challenge is to build out this invoicing application and get it looking as close to the design as possible.
-
-The data is provided in a local `data.json` file. 
+The challenge is to build out this invoicing application.
 
 Your users should be able to:
 
@@ -13,7 +11,6 @@ Your users should be able to:
 - Save draft invoices, and mark pending invoices as paid
 - Filter invoices by status (draft/pending/paid)
 - Toggle light and dark mode
-- **Bonus**: Keep track of any changes, even after refreshing the browser (`localStorage` could be used for this if you're not building out a full-stack app)
 
 ### Expected Behaviour
 
