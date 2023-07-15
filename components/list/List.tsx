@@ -71,12 +71,21 @@ const schema = Yup.object().shape({
   ),
 });
 
+//GENERATE UNIQUE ID FOR NEW INVOICE
+const genereteID=()=>{
+  const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const randomLetters=Array.from({length:2},()=>letters[Math.floor(Math.random()*letters.length)]);
+  const randomNumbers=Array.from({length:4},()=>Math.floor(Math.random()*9));
+
+  return `${randomLetters.join("")}${randomNumbers.join("")}`;
+}
+
 const resolver: Resolver<Invoice> = yupResolver(schema);
 const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
   mode:'onBlur',
   resolver,
   defaultValues:{
-    id:'',
+    id:genereteID(),
     createdAt:'',
     paymentDue:'',
     description:'',
@@ -111,8 +120,6 @@ const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
 const items = watch('items');
 const onSubmit = (data:Invoice) => {
   dispatch(addInvoiceAsync(data));
-  console.log(data);
-  console.log(invoices);
   reset();
   closeModal();
 };
