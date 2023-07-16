@@ -12,6 +12,6 @@ export const addInvoice=async(invoice:Invoice)=>{
 export const deleteInvoice=async(invoiceId:string)=>{
     return axios.delete(`${BASE_URL}add/${invoiceId}`)
 }
-export const updateInvoice=async(invoiceId:string)=>{
-    return axios.put(`${BASE_URL}add/${invoiceId}`)
+export const updateInvoice=async(invoiceId:string, invoice:Invoice)=>{
+    return axios.put(`${BASE_URL}add/${invoiceId}`, invoice)
 }

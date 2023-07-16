@@ -2,6 +2,7 @@ import { ReduxProvider } from '@/store/provider'
 import './globals.css'
 import { League_Spartan } from 'next/font/google'
 
+
 const spartan = League_Spartan({ subsets: ['latin'] })
 
 export const metadata = {

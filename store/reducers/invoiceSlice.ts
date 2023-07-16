@@ -15,8 +15,8 @@ export const deleteInvoiceAsync=createAsyncThunk('invoices/deleteInvoice', async
     const response=await deleteInvoice(id);
     return response.data;
   })
-export const upateInvoiceAsync=createAsyncThunk('invoices/updateInvoice', async(id:string)=>{
-    const response=await updateInvoice(id);
+export const updateInvoiceAsync=createAsyncThunk('invoices/updateInvoice', async({ id, invoice }: { id: string; invoice: Invoice })=>{
+    const response=await updateInvoice(id, invoice);
     return response.data;
   })
 
@@ -55,7 +55,7 @@ const invoiceSlice=createSlice({
         .addCase(addInvoiceAsync.fulfilled, (state,action)=>{
             state.loading=false;
             const newInvoice=action.payload;
-            state.invoices=[newInvoice,...state.invoices]
+            state.invoices= [newInvoice].concat(state.invoices);
         })
         .addCase(addInvoiceAsync.rejected, (state,action)=>{
             state.loading=false;
@@ -73,13 +73,15 @@ const invoiceSlice=createSlice({
             state.loading=false;
             state.error=action.error.message
         })
-        .addCase(upateInvoiceAsync.fulfilled, (state,action)=>{
-            const updatedInvoice=action.payload;
-            const index=state.invoices.findIndex((item)=>{item.id===updatedInvoice.id})
-            if(index!==-1){
-                state.invoices[index]=updatedInvoice;
-            }
+        .addCase(updateInvoiceAsync.fulfilled, (state,action)=>{
+            const {id,invoice}=action.payload;
+            const updatedInvoice=state.invoices.map((itm)=>(itm.id===id?invoice:itm))
+            state.invoices = updatedInvoice;
         })
+        .addCase(updateInvoiceAsync.rejected, (state,action)=>{
+          state.loading=false;
+          state.error=action.error.message
+      })
      }
 })
 

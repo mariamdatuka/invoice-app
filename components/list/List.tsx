@@ -9,7 +9,7 @@ import * as Yup from "yup"
 import { useDispatch} from 'react-redux';
 import { AppDispatch } from '@/store/store'
 import { useAppSelector } from '@/store/store'
-import { fetchInvoicesAsync,addInvoiceAsync } from '@/store/reducers/invoiceSlice'
+import { fetchInvoicesAsync,addInvoiceAsync} from '@/store/reducers/invoiceSlice'
 import { Invoice } from '@/types'
 
 interface Item {
@@ -20,18 +20,19 @@ interface Item {
 }[]
 
 const List = () => {
-
-  const [totalInvoices, setTotalInvoices]=useState<number|null>(null);
   const [selectedStatus, setSelectedStatus]=useState<string>('');
-  const [filteredList, setFilteredList]=useState([]);
   const [isOpen, setIsOpen]=useState<boolean>(false);
   const [rows,setRows]=useState<Item[]>([]);
   const dispatch = useDispatch<AppDispatch>();
   const invoices = useAppSelector((state) => state.invoices.invoices);
 
-  useEffect(()=>{
-     dispatch(fetchInvoicesAsync())
-  },[])
+const filteredInvoices = selectedStatus === '' ? invoices : invoices.filter(item => item.status === selectedStatus);
+const totalInvoices = filteredInvoices.length;
+
+ useEffect(()=>{
+  dispatch(fetchInvoicesAsync())  
+},[selectedStatus,invoices]);
+
 
   const openModal=()=>{
     setIsOpen(true)
@@ -140,23 +141,6 @@ const addRow=()=>{
   const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
-  
-  const filteredArray=(data:any,selectedStatus:string)=>{
-      if(selectedStatus===''){
-        setTotalInvoices(data.length);
-        return data;
-      } else{
-       const filteredData = data.filter((item: any) => item.status === selectedStatus);
-       setTotalInvoices(filteredData.length);
-       return filteredData;
-      }
-  }
-
-   useEffect(()=>{
-    const filtered=filteredArray(invoices, selectedStatus);
-    setFilteredList(filtered);   
-  },[selectedStatus]);
-
   return (
     <>
   <section className='flex items-center justify-between'>
@@ -218,7 +202,7 @@ const addRow=()=>{
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='number' {...register('senderAddress.postCode')}/>
+             <input className='input w-28'type='text' {...register('senderAddress.postCode')}/>
              <span className='error'>{errors.senderAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
@@ -253,7 +237,7 @@ const addRow=()=>{
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='number' {...register('clientAddress.postCode')}/>
+             <input className='input w-28'type='text' {...register('clientAddress.postCode')}/>
              <span className='error'>{errors.clientAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
@@ -342,20 +326,26 @@ const addRow=()=>{
     </Modal>
     </div>
  </section>
-       <section 
-             className='flex flex-col gap-3 mt-12'>
-           {filteredList?.map((item:any)=>(
-           <Link key={item.id} href={`/invoice/${item.id}`}> 
-             <main className='flex gap-3 bg-[var(--color-white)] p-5 rounded-lg items-center justify-around h-16'>
-                 <p className='text-lg text-[var(--color-black)] font-bold'>#{item.id}</p>
-                 <p className='text-md text-[var(--color-light-gray)]'>{item.paymentDue}</p>
-                 <p className='text-md text-[var(--color-dark-gray)]'>{item.clientName}</p>
-                 <p className='font-bold text-[var(--color-black)] text-lg'>£{item.total}</p>
-                 <div className={`status-${item.status} text-md`}>{item.status}</div>
-                 <Image src='./assets/icon-arrow-right.svg' alt='arrowRight' width={7} height={7}/>
-             </main>
-          </Link>
-           ))}
+       <section className='flex flex-col gap-3 mt-12'>
+           {
+            filteredInvoices.map((item:Invoice)=>( 
+            <Link key={item.id} href={`/invoice/${item.id}`}>
+                  <div  className='flex items-center justify-between bg-[var(--color-white)] rounded-lg p-5'>
+                 <p className='font-bold'>#{item.id}</p>
+                 <p className='smallFont'>{item.createdAt}</p>
+                 <p className='smallFont'>{item.clientName}</p>
+                 <p className='font-bold'>${item.total}</p>
+                 <div className={`status-${item.status} btnBox font-bold`}>
+                     <div className={`circle bg-${item.status}`}></div>
+                     <p>{item.status}</p>
+                 </div>
+                 <Image src='/assets/icon-arrow-right.svg' alt='arrowright' width={7} height={7}/>
+            </div>
+            </Link>
+           
+            ))
+           }
+           
        </section>
     </>
   )
