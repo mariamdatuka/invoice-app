@@ -83,6 +83,6 @@ const invoiceSlice=createSlice({
           state.error=action.error.message
       })
      }
-})
+   })
 
 export default invoiceSlice.reducer;

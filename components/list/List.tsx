@@ -73,7 +73,7 @@ const schema = Yup.object().shape({
 });
 
 //GENERATE UNIQUE ID FOR NEW INVOICE
-const genereteID=()=>{
+const generateID=()=>{
   const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const randomLetters=Array.from({length:2},()=>letters[Math.floor(Math.random()*letters.length)]);
   const randomNumbers=Array.from({length:4},()=>Math.floor(Math.random()*9));
@@ -81,12 +81,11 @@ const genereteID=()=>{
   return `${randomLetters.join("")}${randomNumbers.join("")}`;
 }
 
-const resolver: Resolver<Invoice> = yupResolver(schema);
+
 const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
   mode:'onBlur',
-  resolver,
+  resolver:yupResolver(schema),
   defaultValues:{
-    id:genereteID(),
     createdAt:'',
     paymentDue:'',
     description:'',
@@ -119,8 +118,10 @@ const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
 })
 
 const items = watch('items');
-const onSubmit = (data:Invoice) => {
-  dispatch(addInvoiceAsync(data));
+const onSubmit = (data:any) => {
+  const generatedId = generateID();
+  const invoiceWithId = { ...data, id: generatedId };
+  dispatch(addInvoiceAsync(invoiceWithId));
   reset();
   closeModal();
 };
@@ -301,7 +302,7 @@ const addRow=()=>{
                     </div>
                     <div className='col-span-1 self-center'>
                          <input type='number' className='input w-24' {...register(`items.${index}.total`)}
-                         value={items?.[index]?.quantity * items?.[index]?.price || ''}
+                         
                           readOnly 
                           />
                       <span className='error'>{errors.items?.[index]?.total?.message}</span>

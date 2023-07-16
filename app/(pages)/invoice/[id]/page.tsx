@@ -13,8 +13,8 @@ import Header from '@/components/header/Header';
 import { useForm,Resolver } from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
-import { Invoice } from '@/types';
-import { InvoiceItem } from '@/types';
+import { Invoice, InvoiceItem } from '@/types';
+
 
 type Props = {
     params: {
@@ -29,13 +29,18 @@ const [isOpen, setIsOpen]=useState<boolean>(false);
 const [IsOpenModal, setIsOpenModal]=useState<boolean>(false);
 const dispatch = useDispatch<AppDispatch>();
 const invoices = useAppSelector((state) => state.invoices.invoices);
+console.log(invoices);
 const router=useRouter();
-const {id}=params
-const invoice=invoices.find((inv)=>inv.id===id);
+const {id}=params;
 
 useEffect(()=>{
 dispatch(fetchInvoicesAsync());
 }, [])
+
+console.log(id);
+const invoice=invoices && invoices.find((inv:Invoice)=>inv.id===id);
+console.log(invoice);
+
 
 const openModal=()=>{
   setIsOpen(true)
@@ -90,12 +95,11 @@ const schema = Yup.object().shape({
   ),
 });
 
-const resolver: Resolver<Invoice> = yupResolver(schema);
+
 const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
   mode:'onBlur',
-  resolver,
+  resolver:yupResolver(schema),
   defaultValues:{
-    id,
     createdAt:'',
     paymentDue:'',
     description:'',
@@ -128,8 +132,9 @@ const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
 })
 
 const items = watch('items');
-const onSubmit = (data:Invoice) => {
-  dispatch(updateInvoiceAsync({ id, invoice: data }));
+const onSubmit = (invoice:any) => {
+  dispatch(updateInvoiceAsync({ id, invoice}));
+  console.log(id)
   router.push('/');
 };
 const addRow=()=>{
@@ -178,6 +183,21 @@ const addRow=()=>{
         openFormModal();
         populateFormFields(invoice); // Populate the form fields with the invoice details
       };
+
+    /*  const changeStatus=(id:string,invoice:Invoice)=>{
+        if(invoice.status!=='paid'){
+            const updatedInvoice={...invoice, status:'paid'}
+            dispatch(updateInvoiceAsync({id,invoice:updatedInvoice}));
+        }
+      }
+
+      const changeToDraft=(id:string,invoice:Invoice)=>{
+        if(invoice.status!=='draft'){
+            const updatedInvoice={...invoice, status:'draft'}
+            dispatch(updateInvoiceAsync({id,invoice:updatedInvoice}));
+        }
+      }
+      */
   return (
     <>
     {invoice && (
@@ -321,7 +341,7 @@ const addRow=()=>{
                     </div>
                     <div className='col-span-1 self-center'>
                          <input type='number' className='input w-24' {...register(`items.${index}.total`)}
-                         value={items?.[index]?.quantity * items?.[index]?.price || ''}
+                        /* value={items![index]?.quantity * items![index]?.price || ''}*/
                           readOnly 
                           />
                       <span className='error'>{errors.items?.[index]?.total?.message}</span>
@@ -335,9 +355,9 @@ const addRow=()=>{
           <button onClick={addRow} type='button'className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
       </section>
       <div className='flex items-center justify-between mt-6'>
-          <button onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
+          <button onClick={closeFormModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
           <div className='flex gap-3  justify-center items-center'>
-              <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
+              <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]' >Save as draft</button>
               <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
@@ -394,8 +414,8 @@ const addRow=()=>{
                     <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>QTY</div>
                     <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>Price</div>
                     <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>total</div>
-                    {invoice.items.map((itm:any)=>(
-                      <div className='grid-rows-1' key={invoice.id}>
+                    {invoice.items.map((itm:any, index)=>(
+                      <div className='grid-rows-1' key={index}>
                          <p>{itm.name}</p>
                          <p>{itm.quantity}</p>
                          <p>{itm.price}</p>
