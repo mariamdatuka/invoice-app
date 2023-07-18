@@ -131,11 +131,10 @@ const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
   }
 })
 
-const items = watch('items');
+const items:any = watch('items');
 const onSubmit = (invoice:any) => {
   dispatch(updateInvoiceAsync({ id, invoice}));
-  console.log(id)
-  router.push('/');
+  closeFormModal();
 };
 const addRow=()=>{
      const newRow={
@@ -341,7 +340,7 @@ const addRow=()=>{
                     </div>
                     <div className='col-span-1 self-center'>
                          <input type='number' className='input w-24' {...register(`items.${index}.total`)}
-                        /* value={items![index]?.quantity * items![index]?.price || ''}*/
+                         value={items?.[index]?.quantity * items?.[index]?.price || ''}
                           readOnly 
                           />
                       <span className='error'>{errors.items?.[index]?.total?.message}</span>

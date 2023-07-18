@@ -10,7 +10,7 @@ import { useDispatch} from 'react-redux';
 import { AppDispatch } from '@/store/store'
 import { useAppSelector } from '@/store/store'
 import { fetchInvoicesAsync,addInvoiceAsync} from '@/store/reducers/invoiceSlice'
-import { Invoice } from '@/types'
+import { Invoice} from '@/types'
 
 interface Item {
   name: string;
@@ -117,7 +117,7 @@ const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
   }
 })
 
-const items = watch('items');
+const items:any = watch('items');
 const onSubmit = (data:any) => {
   const generatedId = generateID();
   const invoiceWithId = { ...data, id: generatedId };
@@ -302,7 +302,7 @@ const addRow=()=>{
                     </div>
                     <div className='col-span-1 self-center'>
                          <input type='number' className='input w-24' {...register(`items.${index}.total`)}
-                         
+                          value={items?.[index]?.quantity * items?.[index]?.price || ''}
                           readOnly 
                           />
                       <span className='error'>{errors.items?.[index]?.total?.message}</span>
@@ -329,8 +329,8 @@ const addRow=()=>{
  </section>
        <section className='flex flex-col gap-3 mt-12'>
            {
-            filteredInvoices.map((item:Invoice)=>( 
-            <Link key={item.id} href={`/invoice/${item.id}`}>
+            filteredInvoices.map((item:Invoice,index)=>( 
+            <Link key={index} href={`/invoice/${item.id}`}>
                   <div  className='flex items-center justify-between bg-[var(--color-white)] rounded-lg p-5'>
                  <p className='font-bold'>#{item.id}</p>
                  <p className='smallFont'>{item.createdAt}</p>
