@@ -76,6 +76,8 @@ const invoiceSlice=createSlice({
         .addCase(updateInvoiceAsync.fulfilled, (state,action)=>{
             const {id,invoice}=action.payload;
             const updatedInvoice=state.invoices.map((itm)=>(itm.id===id?invoice:itm))
+            console.log(id);
+            console.log(invoice)
             state.invoices = updatedInvoice;
         })
         .addCase(updateInvoiceAsync.rejected, (state,action)=>{

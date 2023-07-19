@@ -10,10 +10,11 @@ import { useAppSelector } from '@/store/store'
 import SmallModal from '@/components/Modal/SmallModal';
 import Modal from '@/components/Modal/Modal';
 import Header from '@/components/header/Header';
-import { useForm,Resolver } from 'react-hook-form';
+import {useForm} from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import { Invoice, InvoiceItem } from '@/types';
+import axios from 'axios';
 
 
 type Props = {
@@ -29,18 +30,25 @@ const [isOpen, setIsOpen]=useState<boolean>(false);
 const [IsOpenModal, setIsOpenModal]=useState<boolean>(false);
 const dispatch = useDispatch<AppDispatch>();
 const invoices = useAppSelector((state) => state.invoices.invoices);
-console.log(invoices);
 const router=useRouter();
 const {id}=params;
 
+const invoice= invoices.find((inv:Invoice)=>(inv.id===id));
 useEffect(()=>{
 dispatch(fetchInvoicesAsync());
-}, [])
+}, [invoice])
 
-console.log(id);
-const invoice=invoices && invoices.find((inv:Invoice)=>inv.id===id);
-console.log(invoice);
+const BASE_URL='https://invoice-app-1wi7.onrender.com/api/';
 
+const updateInvoice=async(invoiceId:string, invoice:Invoice)=>{
+  try{
+      const response=await axios.put(`${BASE_URL}add/${invoiceId}`, invoice)
+      console.log(response.data)
+  } 
+  catch (error){
+      console.log(error)
+  }
+}
 
 const openModal=()=>{
   setIsOpen(true)
@@ -133,7 +141,7 @@ const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
 
 const items:any = watch('items');
 const onSubmit = (invoice:any) => {
-  dispatch(updateInvoiceAsync({ id, invoice}));
+  updateInvoice( id, invoice);
   closeFormModal();
 };
 const addRow=()=>{
