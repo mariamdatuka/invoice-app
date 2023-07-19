@@ -179,20 +179,20 @@ const addRow=()=>{
         populateFormFields(invoice); // Populate the form fields with the invoice details
       };
 
-    /*  const changeStatus=(id:string,invoice:Invoice)=>{
+      const changeStatus=(id:string,invoice:Invoice)=>{
         if(invoice.status!=='paid'){
             const updatedInvoice={...invoice, status:'paid'}
             dispatch(updateInvoiceAsync({id,invoice:updatedInvoice}));
         }
       }
-
+      
       const changeToDraft=(id:string,invoice:Invoice)=>{
         if(invoice.status!=='draft'){
             const updatedInvoice={...invoice, status:'draft'}
             dispatch(updateInvoiceAsync({id,invoice:updatedInvoice}));
         }
       }
-      */
+      
   return (
     <>
     {invoice && (
@@ -215,7 +215,7 @@ const addRow=()=>{
          <div className='flex justify-center items-center gap-3'>
              <button className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300' onClick={handleEdit}>Edit</button>
              <button className='bg-[var(--color-dark-red)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-red)] transition-all duration-300' onClick={openModal}>Delete</button>
-             <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300'>Mark as Paid</button>
+             <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300' onClick={()=>changeStatus(invoice.id, invoice)}>Mark as Paid</button>
          </div>
       </section>
       <Modal isOpen={IsOpenModal}>
@@ -352,7 +352,7 @@ const addRow=()=>{
       <div className='flex items-center justify-between mt-6'>
           <button onClick={closeFormModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
           <div className='flex gap-3  justify-center items-center'>
-              <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]' >Save as draft</button>
+              <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]' onClick={()=>changeToDraft(invoice.id, invoice)} >Save as draft</button>
               <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
