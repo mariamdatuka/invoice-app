@@ -32,23 +32,11 @@ const dispatch = useDispatch<AppDispatch>();
 const invoices = useAppSelector((state) => state.invoices.invoices);
 const router=useRouter();
 const {id}=params;
-
 const invoice= invoices.find((inv:Invoice)=>(inv.id===id));
+
 useEffect(()=>{
 dispatch(fetchInvoicesAsync());
-}, [invoice])
-
-const BASE_URL='https://invoice-app-1wi7.onrender.com/api/';
-
-const updateInvoice=async(invoiceId:string, invoice:Invoice)=>{
-  try{
-      const response=await axios.put(`${BASE_URL}add/${invoiceId}`, invoice)
-      console.log(response.data)
-  } 
-  catch (error){
-      console.log(error)
-  }
-}
+}, [invoices])
 
 const openModal=()=>{
   setIsOpen(true)
@@ -141,7 +129,7 @@ const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
 
 const items:any = watch('items');
 const onSubmit = (invoice:any) => {
-  updateInvoice( id, invoice);
+  dispatch(updateInvoiceAsync({id, invoice}));
   closeFormModal();
 };
 const addRow=()=>{
