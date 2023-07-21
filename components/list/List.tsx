@@ -26,13 +26,17 @@ const List = () => {
   const dispatch = useDispatch<AppDispatch>();
   const invoices = useAppSelector((state) => state.invoices.invoices);
 
+
+  const calculateTotal=(items:Item[])=>{
+    return items.reduce((total, item) => total + item.price * item.quantity, 0);
+  }
+
 const filteredInvoices = selectedStatus === '' ? invoices : invoices.filter(item => item.status === selectedStatus);
 const totalInvoices = filteredInvoices.length;
 
  useEffect(()=>{
   dispatch(fetchInvoicesAsync())  
 },[selectedStatus,invoices]);
-
 
   const openModal=()=>{
     setIsOpen(true)
@@ -61,7 +65,6 @@ const schema = Yup.object().shape({
    description:Yup.string().required('required'),
    paymentTerms:Yup.number().required(),
    status:Yup.string().required(),
-   total:Yup.number().required('required'),
    items: Yup.array().of(
     Yup.object().shape({
       name: Yup.string().required('required'),
@@ -73,14 +76,13 @@ const schema = Yup.object().shape({
 });
 
 //GENERATE UNIQUE ID FOR NEW INVOICE
-const generateID=()=>{
+const generateID:any=()=>{
   const letters='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
   const randomLetters=Array.from({length:2},()=>letters[Math.floor(Math.random()*letters.length)]);
   const randomNumbers=Array.from({length:4},()=>Math.floor(Math.random()*9));
 
   return `${randomLetters.join("")}${randomNumbers.join("")}`;
 }
-
 
 const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
   mode:'onBlur',
@@ -113,15 +115,16 @@ const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
         total:0,
       }
      ],
-    total:0,
   }
 })
 
 const items:any = watch('items');
 const onSubmit = (data:any) => {
+  const total=calculateTotal(items)
   const generatedId = generateID();
-  const invoiceWithId = { ...data, id: generatedId };
+  const invoiceWithId = { ...data, id: generatedId, total };
   dispatch(addInvoiceAsync(invoiceWithId));
+  console.log(invoiceWithId)
   reset();
   closeModal();
 };

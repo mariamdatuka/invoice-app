@@ -86,7 +86,7 @@ const schema = Yup.object().shape({
       name: Yup.string().required('required'),
       quantity: Yup.number().required('required').min(1, 'min 1').nullable().transform((value) => Number.isNaN(value) ? null : value ),
       price: Yup.number().required('required').min(1, 'must be a positive number').nullable().transform((value) => Number.isNaN(value) ? null : value ),
-      total: Yup.number().required('required'),
+      total: Yup.number().required('required').nullable().transform((value) => Number.isNaN(value) ? null : value ),
     })
   ),
 });
