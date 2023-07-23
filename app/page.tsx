@@ -9,7 +9,7 @@ export default function Home() {
          <div className='col-span-1'>
               <Header/>
          </div>
-         <div className='col-span-1 md:col-span-3 pt-9 pr-16'>
+         <div className='p-6 col-span-1 md:col-span-3 md:pt-9 md:pr-16'>
                <List/>
          </div>
      </div>

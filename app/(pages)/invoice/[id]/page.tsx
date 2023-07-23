@@ -14,7 +14,7 @@ import {useForm} from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import { Invoice, InvoiceItem } from '@/types';
-import axios from 'axios';
+
 
 
 type Props = {
@@ -80,7 +80,6 @@ const schema = Yup.object().shape({
    description:Yup.string().required('required'),
    paymentTerms:Yup.number().required(),
    status:Yup.string().required(),
-   total:Yup.number().required('required'),
    items: Yup.array().of(
     Yup.object().shape({
       name: Yup.string().required('required'),
@@ -123,13 +122,19 @@ const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
         total:0,
       }
      ],
-    total:0,
   }
 })
 
 const items:any = watch('items');
+
+const calculateTotal=(items:InvoiceItem[])=>{
+  return items.reduce((total,item)=>total+item.price*item.quantity,0)
+}
+
 const onSubmit = (invoice:any) => {
-  dispatch(updateInvoiceAsync({id, invoice}));
+  const total=calculateTotal(items);
+  const updatedInvoice={...invoice, total}
+  dispatch(updateInvoiceAsync({id, invoice:updatedInvoice}));
   closeFormModal();
 };
 const addRow=()=>{
@@ -163,7 +168,7 @@ const addRow=()=>{
         setValue('createdAt', invoice.createdAt);
         setValue('paymentDue', invoice.paymentDue);
         setValue('description', invoice.description);
-        setValue('total', invoice.total);
+       
 
         // Set values for the items fields
         invoice.items.forEach((item:any, index:number) => {

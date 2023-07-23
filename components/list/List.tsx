@@ -3,7 +3,7 @@ import React, {useState,useEffect} from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import Modal from '../Modal/Modal'
-import { useForm,Resolver } from 'react-hook-form';
+import { useForm} from 'react-hook-form';
 import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import { useDispatch} from 'react-redux';
@@ -26,7 +26,7 @@ const List = () => {
   const dispatch = useDispatch<AppDispatch>();
   const invoices = useAppSelector((state) => state.invoices.invoices);
 
-
+  //calculate total price of all items array of objects
   const calculateTotal=(items:Item[])=>{
     return items.reduce((total, item) => total + item.price * item.quantity, 0);
   }
@@ -84,7 +84,7 @@ const generateID:any=()=>{
   return `${randomLetters.join("")}${randomNumbers.join("")}`;
 }
 
-const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
+const {register,handleSubmit, formState:{errors},watch,reset,getValues}=useForm({
   mode:'onBlur',
   resolver:yupResolver(schema),
   defaultValues:{
@@ -114,7 +114,7 @@ const {register,handleSubmit, formState:{errors},watch,reset}=useForm({
         price:0,
         total:0,
       }
-     ],
+     ]|| [],
   }
 })
 
@@ -124,10 +124,10 @@ const onSubmit = (data:any) => {
   const generatedId = generateID();
   const invoiceWithId = { ...data, id: generatedId, total };
   dispatch(addInvoiceAsync(invoiceWithId));
-  console.log(invoiceWithId)
   reset();
   closeModal();
 };
+//add new object as a row in items array
 const addRow=()=>{
      const newRow={
         name:'',
@@ -145,27 +145,39 @@ const addRow=()=>{
   const handleChange=(e:any)=>{
        setSelectedStatus(e.target.value)
   }
+ 
+  //add invoice without validations
+  const saveDraft=()=>{
+    const data=getValues();
+    const total=calculateTotal(items)
+    const generatedId = generateID();
+    const invoiceWithId = { ...data, id: generatedId, total, status:'draft' };
+    dispatch(addInvoiceAsync(invoiceWithId));
+    reset();
+    closeModal();
+  }
+
   return (
     <>
   <section className='flex items-center justify-between'>
     <div className='flex flex-col gap-2'>
-         <h1 className='text-4xl font-bold'>Invoices</h1>
+         <h1 className='text-xl sm:text-4xl font-bold'>Invoices</h1>
          <p className='text-[var(--color-dark-gray)] text-xs'>There are total {totalInvoices}  invoices</p>
     </div>
   <div className='flex justify-center items-center gap-3'> 
     <div className="relative inline-block">
   <select
-    className="block appearance-none bg-white pl-3 pr-8 py-2 text-gray-900 rounded-md leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
+    className="block appearance-none bg-transparent pl-3 pr-8 py-2 text-gray-900 rounded-md leading-tight focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
     onChange={handleChange}
   > 
     <option value="">
-      Filter by status
+      Filter{window.innerWidth < 640 ? '' : 'by status'}
     </option>
     <option value="paid">paid</option>
     <option value="pending">pending</option>
-    <option value="unpaid">unpaid</option>
+    <option value="draft">draft</option>
   </select>
-  <div className="absolute inset-y-0 right-0 flex items-center pr-2 pointer-events-none">
+  <div className="absolute inset-y-0 right-0 flex items-center pr-5 sm:pr-2 pointer-events-none">
     <svg
       className="w-4 h-4 text-gray-400"
       fill="none"
@@ -185,7 +197,7 @@ const addRow=()=>{
         <div className=' bg-slate-50 rounded-full w-6 h-6 flex justify-center items-center'>
            <Image src='/assets/icon-plus.svg' alt='plus' width={10} height={10}/>
         </div>
-        <p className='text-[var(--color-light)]'>New invoice</p>
+        <p className='text-[var(--color-light)]'>New {window.innerWidth<640?'':'Invoice'}</p>
     </button>
     <Modal isOpen={isOpen}>
       <main>
@@ -321,7 +333,7 @@ const addRow=()=>{
       <div className='flex items-center justify-between mt-6'>
           <button onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
           <div className='flex gap-3  justify-center items-center'>
-              <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
+              <button onClick={saveDraft}type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
               <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
@@ -334,16 +346,16 @@ const addRow=()=>{
            {
             filteredInvoices.map((item:Invoice,index)=>( 
             <Link key={index} href={`/invoice/${item.id}`}>
-                  <div  className='flex items-center justify-between bg-[var(--color-white)] rounded-lg p-5'>
-                 <p className='font-bold'>#{item.id}</p>
-                 <p className='smallFont'>{item.createdAt}</p>
-                 <p className='smallFont'>{item.clientName}</p>
-                 <p className='font-bold'>${item.total}</p>
-                 <div className={`status-${item.status} btnBox font-bold`}>
+                  <div  className='grid grid-cols-6 place-items-center bg-[var(--color-white)] rounded-lg p-5 border-2 border-transparent hover:border-[var(--color-dark-purple)] transition border-solid duration-300'>
+                 <p className='font-bold col-span-1'>#{item.id}</p>
+                 <p className='smallFont col-span-1'>{item.createdAt}</p>
+                 <p className='smallFont col-span-1'>{item.clientName}</p>
+                 <p className='font-bold col-span-1'>${item.total}</p>
+                 <div className={`status-${item.status} btnBox font-bold col-span-1`}>
                      <div className={`circle bg-${item.status}`}></div>
                      <p>{item.status}</p>
                  </div>
-                 <Image src='/assets/icon-arrow-right.svg' alt='arrowright' width={7} height={7}/>
+                 <Image className='col-span-1 justify-self-start max-w-[calc(100%/6/2)]'src='/assets/icon-arrow-right.svg' alt='arrowright' width={7} height={7}/>
             </div>
             </Link>
            
