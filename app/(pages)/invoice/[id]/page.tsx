@@ -254,12 +254,12 @@ const addRow=()=>{
      <section className='flex flex-col gap-5 mt-6'>
        <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill to</p>
         <div className='flexbox'>
-          <label className='label'>Client's Name</label>
+          <label className='label'>{`Client's Name`}</label>
           <input className='input w-72 sm:w-96'type='text' {...register('clientName')}/>
           <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
-          <label className='label'>Client's Email</label>
+          <label className='label'>{`Client's Email`}</label>
           <input className='input w-72 sm:w-96'type='email' {...register('clientEmail')}/>
           <span className='error'>{errors.clientEmail?.message}</span>
         </div>
