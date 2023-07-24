@@ -36,7 +36,8 @@ const totalInvoices = filteredInvoices.length;
 
  useEffect(()=>{
   dispatch(fetchInvoicesAsync())  
-},[selectedStatus,invoices,dispatch]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+},[selectedStatus,invoices]);
 
   const openModal=()=>{
     setIsOpen(true)

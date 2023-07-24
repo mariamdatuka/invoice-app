@@ -34,7 +34,8 @@ const invoice= invoices.find((inv:Invoice)=>(inv.id===id));
 
 useEffect(()=>{
 dispatch(fetchInvoicesAsync());
-}, [invoices,dispatch])
+// eslint-disable-next-line react-hooks/exhaustive-deps
+}, [invoices])
 
 const openModal=()=>{
   setIsOpen(true)
