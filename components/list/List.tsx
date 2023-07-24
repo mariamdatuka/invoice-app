@@ -172,7 +172,7 @@ const addRow=()=>{
     onChange={handleChange}
   > 
     <option value="">
-      Filter{window.innerWidth < 640 ? '' : 'by status'}
+      Filter
     </option>
     <option value="paid">paid</option>
     <option value="pending">pending</option>
@@ -198,7 +198,7 @@ const addRow=()=>{
         <div className=' bg-slate-50 rounded-full w-6 h-6 flex justify-center items-center'>
            <Image src='/assets/icon-plus.svg' alt='plus' width={10} height={10}/>
         </div>
-        <p className='text-[var(--color-light)]'>New {window.innerWidth<640?'':'Invoice'}</p>
+        <p className='text-[var(--color-light)]'>New</p>
     </button>
     <Modal isOpen={isOpen}>
       <main>
