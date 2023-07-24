@@ -207,23 +207,23 @@ const addRow=()=>{
         <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill from</p>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text' {...register('senderAddress.street')}/>
+          <input className='input w-72 sm:w-96'type='text' {...register('senderAddress.street')}/>
           <span className='error'>{errors.senderAddress?.street?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text' {...register('senderAddress.city')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('senderAddress.city')}/>
              <span className='error'>{errors.senderAddress?.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='text' {...register('senderAddress.postCode')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('senderAddress.postCode')}/>
              <span className='error'>{errors.senderAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text' {...register('senderAddress.country')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('senderAddress.country')}/>
              <span className='error'>{errors.senderAddress?.country?.message}</span>
           </div>
         </div>
@@ -232,45 +232,45 @@ const addRow=()=>{
        <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill to</p>
         <div className='flexbox'>
           <label className='label'>Client's Name</label>
-          <input className='input w-96'type='text' {...register('clientName')}/>
+          <input className='input w-72 sm:w-96'type='text' {...register('clientName')}/>
           <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
           <label className='label'>Client's Email</label>
-          <input className='input w-96'type='email' {...register('clientEmail')}/>
+          <input className='input w-72 sm:w-96'type='email' {...register('clientEmail')}/>
           <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text'{...register('clientAddress.street')}/>
+          <input className='input w-72 sm:w-96'type='text'{...register('clientAddress.street')}/>
           <span className='error'>{errors.clientAddress?.street?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text' {...register('clientAddress.city')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('clientAddress.city')}/>
              <span className='error'>{errors.clientAddress?.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='text' {...register('clientAddress.postCode')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('clientAddress.postCode')}/>
              <span className='error'>{errors.clientAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text' {...register('clientAddress.country')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('clientAddress.country')}/>
              <span className='error'>{errors.clientAddress?.country?.message}</span>
           </div>
        </div>
        <div className='flex gap-6 items-center justify-start'>
            <div className='flexbox'>
               <label className='label'>Invoice Date</label>
-              <input className='input w-44'type='date'{...register('createdAt')}/>
+              <input className='input w-36 sm:w-44'type='date'{...register('createdAt')}/>
               <span className='error'>{errors.createdAt?.message}</span>
            </div>
            <div className='flexbox'>
               <label className='label'>Payment terms</label>
-              <select className='w-44 input' {...register('paymentDue')}>
+              <select className='w-36 sm:w-44 input' {...register('paymentDue')}>
                   <option value='Next 30 Days'>Next 30 Days</option>
                   <option value='Next 1 Day'>Next 1 Day</option>
                   <option value='Next 7 Days'>Next 7 Days</option>
@@ -281,7 +281,7 @@ const addRow=()=>{
          </div>
          <div className='flexbox'>
              <label className='label'>Project Description</label>
-             <input className='input w-96'type='text' placeholder='e.g Graphic design service'
+             <input className='input w-72 sm:w-96'type='text' placeholder='e.g Graphic design service'
               {...register('description')}/>
               <span className='error'>{errors.description?.message}</span>
           </div>
@@ -298,7 +298,7 @@ const addRow=()=>{
              rows?.map((_,index:number)=>(
                <div key={index} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
                     <div className='col-span-2 flexbox'>
-                        <input className='w-40 input'type='text' {...register(`items.${index}.name`)}/>
+                        <input className='w-36 sm:w-40 input'type='text' {...register(`items.${index}.name`)}/>
                         <span className='error'>{errors.items?.[index]?.name?.message}</span>
                     </div>
                     <div className='col-span-1 flexbox'>
@@ -328,13 +328,13 @@ const addRow=()=>{
                </div>
              ))
            }
-          <button onClick={addRow} type='button'className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
+          <button onClick={addRow} type='button'className='bg-[var(--bg-gray)] rounded-3xl border-none w-64 md:w-96 p-2 smallFont font-bold'>+ Add New Item</button>
       </section>
       <div className='flex items-center justify-between mt-6'>
-          <button onClick={closeModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
+          <button onClick={closeModal}className='bg-gray-100 rounded-3xl px-3 md:px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
           <div className='flex gap-3  justify-center items-center'>
-              <button onClick={saveDraft}type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
-              <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
+              <button onClick={saveDraft}type='button'className='bg-[var(--color-black)] rounded-3xl px-3 md:px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]'>Save as draft</button>
+              <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-3 md:px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
       </form> 
@@ -344,18 +344,18 @@ const addRow=()=>{
  </section>
        <section className='flex flex-col gap-3 mt-12'>
            {
-            filteredInvoices.map((item:Invoice,index)=>( 
+            filteredInvoices.map((item:Invoice,index:any)=>( 
             <Link key={index} href={`/invoice/${item.id}`}>
-                  <div  className='grid grid-cols-6 place-items-center bg-[var(--color-white)] rounded-lg p-5 border-2 border-transparent hover:border-[var(--color-dark-purple)] transition border-solid duration-300'>
-                 <p className='font-bold col-span-1'>#{item.id}</p>
-                 <p className='smallFont col-span-1'>{item.createdAt}</p>
-                 <p className='smallFont col-span-1'>{item.clientName}</p>
-                 <p className='font-bold col-span-1'>${item.total}</p>
-                 <div className={`status-${item.status} btnBox font-bold col-span-1`}>
+                  <div  className='grid grid-cols-2 sm:grid-cols-6 place-items-center bg-[var(--color-white)] rounded-lg p-5 border-2 border-transparent hover:border-[var(--color-dark-purple)] transition border-solid duration-300'>
+                 <p className='font-bold col-span-1 sm:order-1'>#{item.id}</p>
+                 <p className='smallFont col-span-1 sm:order-3'>{item.clientName}</p>
+                 <p className='smallFont col-span-1 self-end sm:order-2 sm:self-center'>{item.createdAt}</p>
+                 <div className={`status-${item.status} btnBox font-bold col-span-1 sm:order-6`}>
                      <div className={`circle bg-${item.status}`}></div>
                      <p>{item.status}</p>
                  </div>
-                 <Image className='col-span-1 justify-self-start max-w-[calc(100%/6/2)]'src='/assets/icon-arrow-right.svg' alt='arrowright' width={7} height={7}/>
+                 <Image className='hidden sm:block col-span-1 justify-self-start ml-5 sm:order-7'src='/assets/icon-arrow-right.svg' alt='arrowright' width={7} height={7}/>
+                 <p className='font-bold col-span-1 sm:order-5'>${item.total}</p>
             </div>
             </Link>
            

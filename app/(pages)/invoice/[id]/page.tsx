@@ -127,8 +127,8 @@ const {register,handleSubmit, formState:{errors},watch,setValue}=useForm({
 
 const items:any = watch('items');
 
-const calculateTotal=(items:InvoiceItem[])=>{
-  return items.reduce((total,item)=>total+item.price*item.quantity,0)
+const calculateTotal=(items:any)=>{
+  return items?.reduce((total:any,item:any)=>total+item.price*item?.quantity,0)
 }
 
 const onSubmit = (invoice:any) => {
@@ -212,15 +212,15 @@ const addRow=()=>{
           <Image src='../../../../assets/icon-arrow-left.svg' alt='arrowleft' width={7} height={7}/>
           <p>Go back</p>
       </button>
-      <section className='w-10/12 flex items-center justify-between bg-[var(--color-white)] rounded-lg p-6' >
-         <div className='flex gap-2 justify-center items-center'>
+      <section className='w-10/12 grid grid-cols-1 sm:grid-cols-3 bg-[var(--color-white)] rounded-lg p-2 sm:p-6 place-items-center' >
+         <div className='flex gap-2 justify-start items-center'>
              <p className='text-[var(--color-dark-gray)] text-xs'>Status</p>
-             <div className={`status-${invoice?.status.toLowerCase()} text-md`}>{invoice.status}</div>
+             <div className={`status-${invoice?.status?.toLowerCase()} text-md p-2 rounded-3xl`}>{invoice.status}</div>
          </div>
-         <div className='flex justify-center items-center gap-3'>
-             <button className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300' onClick={handleEdit}>Edit</button>
-             <button className='bg-[var(--color-dark-red)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-red)] transition-all duration-300' onClick={openModal}>Delete</button>
-             <button className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300' onClick={()=>changeStatus(invoice.id, invoice)}>Mark as Paid</button>
+         <div className='sm:col-span-2 flex justify-center items-center gap-1 sm:gap-3 mt-4 sm:mt-0'>
+             <button className='bg-gray-100 rounded-3xl px-2 sm:px-5 py-3 hover:bg-cyan-50 transition-all duration-300' onClick={handleEdit}>Edit</button>
+             <button className='bg-[var(--color-dark-red)] rounded-3xl px-2 sm:px-5 py-3 hover:bg-[var(--color-light-red)] transition-all duration-300' onClick={openModal}>Delete</button>
+             <button className='bg-[var(--color-dark-purple)] rounded-3xl px-2 sm:px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300' onClick={()=>changeStatus(invoice.id, invoice)}>Mark as Paid</button>
          </div>
       </section>
       <Modal isOpen={IsOpenModal}>
@@ -231,23 +231,23 @@ const addRow=()=>{
         <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill from</p>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text' {...register('senderAddress.street')}/>
+          <input className='input w-72 sm:w-96'type='text' {...register('senderAddress.street')}/>
           <span className='error'>{errors.senderAddress?.street?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text' {...register('senderAddress.city')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('senderAddress.city')}/>
              <span className='error'>{errors.senderAddress?.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='text' {...register('senderAddress.postCode')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('senderAddress.postCode')}/>
              <span className='error'>{errors.senderAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text' {...register('senderAddress.country')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('senderAddress.country')}/>
              <span className='error'>{errors.senderAddress?.country?.message}</span>
           </div>
         </div>
@@ -256,45 +256,45 @@ const addRow=()=>{
        <p className='text-[var(--color-dark-purple)] font-bold text-xs'>bill to</p>
         <div className='flexbox'>
           <label className='label'>Client's Name</label>
-          <input className='input w-96'type='text' {...register('clientName')}/>
+          <input className='input w-72 sm:w-96'type='text' {...register('clientName')}/>
           <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
           <label className='label'>Client's Email</label>
-          <input className='input w-96'type='email' {...register('clientEmail')}/>
+          <input className='input w-72 sm:w-96'type='email' {...register('clientEmail')}/>
           <span className='error'>{errors.clientEmail?.message}</span>
         </div>
         <div className='flexbox'>
           <label className='label'>Street Address</label>
-          <input className='input w-96'type='text'{...register('clientAddress.street')}/>
+          <input className='input w-72 sm:w-96'type='text'{...register('clientAddress.street')}/>
           <span className='error'>{errors.clientAddress?.street?.message}</span>
         </div>
        <div className='flex gap-6 items-center justify-start'>
           <div className='flexbox'>
              <label className='label'>City</label>
-             <input className='input w-28'type='text' {...register('clientAddress.city')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('clientAddress.city')}/>
              <span className='error'>{errors.clientAddress?.city?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Post Code</label>
-             <input className='input w-28'type='text' {...register('clientAddress.postCode')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('clientAddress.postCode')}/>
              <span className='error'>{errors.clientAddress?.postCode?.message}</span>
           </div>
           <div className='flexbox'>
              <label className='label'>Country</label>
-             <input className='input w-28'type='text' {...register('clientAddress.country')}/>
+             <input className='input w-20 sm:w-28'type='text' {...register('clientAddress.country')}/>
              <span className='error'>{errors.clientAddress?.country?.message}</span>
           </div>
        </div>
        <div className='flex gap-6 items-center justify-start'>
            <div className='flexbox'>
               <label className='label'>Invoice Date</label>
-              <input className='input w-44'type='date'{...register('createdAt')}/>
+              <input className='input w-36 sm:w-44'type='date'{...register('createdAt')}/>
               <span className='error'>{errors.createdAt?.message}</span>
            </div>
            <div className='flexbox'>
               <label className='label'>Payment terms</label>
-              <select className='w-44 input' {...register('paymentDue')}>
+              <select className='w-36 sm:w-44 input' {...register('paymentDue')}>
                   <option value='Next 30 Days'>Next 30 Days</option>
                   <option value='Next 1 Day'>Next 1 Day</option>
                   <option value='Next 7 Days'>Next 7 Days</option>
@@ -305,7 +305,7 @@ const addRow=()=>{
          </div>
          <div className='flexbox'>
              <label className='label'>Project Description</label>
-             <input className='input w-96'type='text' placeholder='e.g Graphic design service'
+             <input className='input w-72 sm:w-96'type='text' placeholder='e.g Graphic design service'
               {...register('description')}/>
               <span className='error'>{errors.description?.message}</span>
           </div>
@@ -352,13 +352,13 @@ const addRow=()=>{
                </div>
              ))
            }
-          <button onClick={addRow} type='button'className='bg-[var(--bg-gray)] rounded-3xl border-none w-96 p-2 smallFont font-bold'>+ Add New Item</button>
+          <button onClick={addRow} type='button'className='bg-[var(--bg-gray)] rounded-3xl border-none w-72 sm:w-96 p-2 smallFont font-bold'>+ Add New Item</button>
       </section>
       <div className='flex items-center justify-between mt-6'>
-          <button onClick={closeFormModal}className='bg-gray-100 rounded-3xl px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
+          <button onClick={closeFormModal}className='bg-gray-100 rounded-3xl px-3 sm:px-5 py-3 hover:bg-cyan-50 transition-all duration-300 text-[var(--color-dark-gray)]'>Discard</button>
           <div className='flex gap-3  justify-center items-center'>
               <button type='button'className='bg-[var(--color-black)] rounded-3xl px-5 py-3 hover:opacity-90 transition-all duration-300 text-[var(--color-dark-gray)]' onClick={()=>changeToDraft(invoice.id, invoice)} >Save as draft</button>
-              <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
+              <button type='submit' className='bg-[var(--color-dark-purple)] rounded-3xl px-3 sm:px-5 py-3 hover:bg-[var(--color-light-purple)] transition-all duration-300 text-[var(--color-white)]'>Save & Send</button>
           </div>
       </div>
       </form> 
@@ -375,8 +375,8 @@ const addRow=()=>{
         </div>   
       </SmallModal>
       <section className='w-10/12 bg-[var(--color-white)] rounded-lg p-6'>
-            <div className='grid grid-cols-4'>
-                 <div className='flex flex-col justify-center items-center gap-5'>
+            <div className='grid grid-cols-2 sm:grid-cols-4 place-items-center'>
+                 <div className='flex flex-col justify-center items-center gap-2 sm:gap-5'>
                     <div className='pb-4'>
                         <h4 className='font-bold'>#{invoice.id}</h4>
                         <span className='text-[var(--color-light-gray)] text-xs'>{invoice.description}</span>
@@ -392,37 +392,41 @@ const addRow=()=>{
                   </div>
                  <div className='justify-self-center self-end'>
                       <span className='text-[var(--color-light-gray)] text-xs'>Bill to</span>
-                      <h5 className='font-bold'>{invoice.clientName}</h5>
-                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice.clientAddress.street}</p>
-                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice.clientAddress.city}</p>
-                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice.clientAddress.postCode}</p>
-                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice.clientAddress.country}</p>
+                      <h5 className='font-bold'>{invoice?.clientName}</h5>
+                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.clientAddress?.street}</p>
+                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.clientAddress?.city}</p>
+                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.clientAddress?.postCode}</p>
+                      <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.clientAddress?.country}</p>
                  </div>
                  <div className='self-center justify-self-center'>
                       <span className='text-[var(--color-light-gray)] text-xs'>Sent to</span>
                       <p className='font-bold'>{invoice.clientEmail}</p>
                  </div>
-                 <div className='self-start justify-self-center'>
-                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice.clientAddress.street}</p>
-                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice.senderAddress.city}</p>
-                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice.senderAddress.postCode}</p>
-                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice.senderAddress.country}</p>
+                 <div className='mt-2 sm:mt-0 justify-self-center'>
+                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.clientAddress?.street}</p>
+                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.senderAddress?.city}</p>
+                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.senderAddress?.postCode}</p>
+                     <p className='text-[var(--color-light-gray)] text-xs'>{invoice?.senderAddress?.country}</p>
                  </div>
             </div>
-            <section className='grid grid-cols-5  mt-10 bg-[var(--bg-gray)] px-4 py-6'>
-                    <div className='col-span-2 text-[var(--color-light-gray)] text-xs'>item name</div>
+            <section className='hidden sm:grid sm:grid-cols-5  mt-10 bg-[var(--bg-gray)] px-4 py-3'>
+                    <div className='col-span-1 sm:col-span-2 text-[var(--color-light-gray)] text-xs'>item name</div>
                     <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>QTY</div>
                     <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>Price</div>
-                    <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>total</div>
-                    {invoice.items.map((itm:any, index)=>(
-                      <div className='grid-rows-1' key={index}>
-                         <p>{itm.name}</p>
-                         <p>{itm.quantity}</p>
-                         <p>{itm.price}</p>
-                         <p>{itm.total}</p>
+                    <div className='col-span-1 text-[var(--color-light-gray)] text-xs'>total</div>         
+            </section>
+            {invoice?.items?.map((itm:any, index:any)=>(
+                      <div className='mt-5 sm:mt-0 grid grid-cols-2 sm:grid-cols-5 px-4 py-2' key={index}>
+                         <p className='col-span-1 sm:col-span-2'>{itm.name}</p>
+                         <p className='col-span-1 justify-self-center self-center'>{itm.total}</p>
+                         <div className='block sm:hidden'>
+                             {itm.quantity}x{itm.price}
+                         </div>
+                         <p className='hidden sm:blockcol-span-1'>{itm.quantity}</p>
+                         <p className='hidden sm:block col-span-1'>{itm.price}</p>
+                        
                       </div>
                     ))}
-            </section>
             <div className='px-4 py-6 flex items-center justify-between bg-[var(--color-dark-blue)] rounded-md'>
                 <p className='text-xs text-[var(--color-white)]'>Amount Due</p>
                 <h2 className='text-2xl text-[var(--color-white)]'>£{invoice.total}</h2>
