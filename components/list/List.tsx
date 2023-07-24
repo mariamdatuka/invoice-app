@@ -36,7 +36,7 @@ const totalInvoices = filteredInvoices.length;
 
  useEffect(()=>{
   dispatch(fetchInvoicesAsync())  
-},[selectedStatus,invoices]);
+},[selectedStatus,invoices,dispatch]);
 
   const openModal=()=>{
     setIsOpen(true)

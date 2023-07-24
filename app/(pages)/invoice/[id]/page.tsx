@@ -15,8 +15,6 @@ import { yupResolver } from "@hookform/resolvers/yup"
 import * as Yup from "yup"
 import { Invoice, InvoiceItem } from '@/types';
 
-
-
 type Props = {
     params: {
       id: string;
@@ -36,7 +34,7 @@ const invoice= invoices.find((inv:Invoice)=>(inv.id===id));
 
 useEffect(()=>{
 dispatch(fetchInvoicesAsync());
-}, [invoices])
+}, [invoices,dispatch])
 
 const openModal=()=>{
   setIsOpen(true)
