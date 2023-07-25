@@ -319,18 +319,18 @@ const addRow=()=>{
           </div>
            {
              rows?.map((_,index:number)=>(
-               <div key={index} className='grid grid-cols-6 place-items-start mb-3 gap-2'>
+               <div key={index} className='grid grid-cols-6 place-items-start mb-3 sm:gap-2'>
                     <div className='col-span-2 flexbox'>
-                        <input className='w-40 input'type='text' {...register(`items.${index}.name`)}/>
+                        <input className='w-32 sm:w-40 input'type='text' {...register(`items.${index}.name`)}/>
                         <span className='error'>{errors.items?.[index]?.name?.message}</span>
                     </div>
                     <div className='col-span-1 flexbox'>
-                        <input type='number' className='input w-11' {...register(`items.${index}.quantity`)}
+                        <input type='number' className='input w-9 sm:w-11' {...register(`items.${index}.quantity`)}
                         />
                         <span className='error'>{errors.items?.[index]?.quantity?.message}</span>
                     </div>
                     <div className='col-span-1 flexbox'>
-                        <input type='text' className='input w-24' {...register(`items.${index}.price`)}
+                        <input type='text' className='w:16 input sm:w-24' {...register(`items.${index}.price`)}
                         />
                         {
                            items?.[index]?.price!==null && (
@@ -339,7 +339,7 @@ const addRow=()=>{
                         }
                     </div>
                     <div className='col-span-1 self-center'>
-                         <input type='number' className='input w-24' {...register(`items.${index}.total`)}
+                         <input type='number' className='input w-16 sm:w-24' {...register(`items.${index}.total`)}
                          value={items?.[index]?.quantity * items?.[index]?.price || ''}
                           readOnly 
                           />
